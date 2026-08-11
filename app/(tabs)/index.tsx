@@ -1,9 +1,16 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import TaskItem from "../../src/components/task/TaskItem";
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 bg-white p-6">
-      <Text className="text-4xl font-bold">あとメモ</Text>
+    <View className="flex-1 bg-white p-20 ">
+      <TaskItem title="犬の散歩" subtasks="" />
+      <TaskItem
+        title="開発"
+        subtasks="  ・イラストレーターさん委託
+  ・デザイナー資料
+  ・要件定義書作成"
+      />
     </View>
   );
 }
