@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 
 type TaskItemProps = {
   title: string;
-  subtasks: string;
+  subtasks?: string;
 };
 
 export default function TaskItem({ title, subtasks }: TaskItemProps) {
