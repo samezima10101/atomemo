@@ -1,6 +1,6 @@
 import DateItem from "@/src/components/calendar/DateItem";
 import { useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 const dateItems = [
   { date: "1", content: "月" },
@@ -16,8 +16,8 @@ export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("1");
 
   return (
-    <View className="flex-1 bg-white p-6">
-      <View className="flex-row justify-between items-center space-x-1">
+    <View style={styles.container}>
+      <View style={styles.weekRow}>
         {dateItems.map((item) => (
           <DateItem
             key={item.date}
@@ -32,3 +32,16 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 24,
+  },
+  weekRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
