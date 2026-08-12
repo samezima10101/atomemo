@@ -1,16 +1,35 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import TaskItem from "../../src/components/task/TaskItem";
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 bg-white p-20 ">
-      <TaskItem title="犬の散歩" />
+    <View style={styles.container}>
       <TaskItem
-        title="開発"
-        subtasks="  ・イラストレーターさん委託
-  ・デザイナー資料
-  ・要件定義書作成"
+        taskStyle={styles.task}
+        titleStyle={styles.title}
+        subtasksStyle={styles.subtasks}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 80,
+    paddingLeft: 90,
+  },
+  task: {
+    marginBottom: 70,
+  },
+  title: {
+    fontSize: 50,
+    fontWeight: "bold",
+  },
+  subtasks: {
+    marginTop: 20,
+    fontSize: 18,
+    opacity: 0.5,
+  },
+});
