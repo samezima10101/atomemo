@@ -1,21 +1,21 @@
 import { Platform } from "react-native";
 
-const BLUE = "#0994FF";
-const BLUE_DARK = "#2A65BE";
-const BLUE_LIGHT = "#D7EAF6";
-const SURFACE = "#FFFFFF";
-const GRAY = "#D9D9D9";
-const GRAY_LIGHT = "#e5e7eb";
-const RED = "#FF0909";
+const blue = "#0994FF";
+const blueDark = "#2A65BE";
+const blueLight = "#D7EAF6";
+const surface = "#FFFFFF";
+const gray = "#D9D9D9";
+const grayLight = "#e5e7eb";
+const red = "#FF0909";
 
 export const Colors = {
-  blue: BLUE,
-  blue_dark: BLUE_DARK,
-  blue_light: BLUE_LIGHT,
-  surface: SURFACE,
-  gray: GRAY,
-  gray_light: GRAY_LIGHT,
-  red: RED,
+  blue: blue,
+  blueDark: blueDark,
+  blueLight: blueLight,
+  white: surface,
+  gray: gray,
+  grayLight: grayLight,
+  red: red,
 };
 
 export const Fonts = Platform.select({

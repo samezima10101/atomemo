@@ -20,7 +20,7 @@ export default function DateItem({
     <Pressable
       onPress={onPress}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      android_ripple={{ color: Colors.blue_light }}
+      android_ripple={{ color: Colors.blueLight }}
       accessibilityRole="button"
       style={{
         flex: 1,
@@ -35,7 +35,7 @@ export default function DateItem({
       <View
         style={{
           alignItems: "center",
-          backgroundColor: highlighted ? Colors.gray_light : "transparent",
+          backgroundColor: highlighted ? Colors.grayLight : "transparent",
           paddingHorizontal: 9,
           paddingVertical: 4,
           minWidth: 52,
@@ -49,7 +49,7 @@ export default function DateItem({
             width: 32,
             height: 2,
             borderRadius: 1,
-            backgroundColor: selected ? Colors.blue_light : "transparent",
+            backgroundColor: selected ? Colors.blueLight : "transparent",
           }}
         />
       </View>
