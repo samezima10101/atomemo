@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 const blue = "#0994FF";
 const blueDark = "#2A65BE";
 const blueLight = "#D7EAF6";
-const surface = "#FFFFFF";
+const white = "#FFFFFF";
 const gray = "#D9D9D9";
 const grayLight = "#e5e7eb";
 const red = "#FF0909";
@@ -12,7 +12,7 @@ export const Colors = {
   blue: blue,
   blueDark: blueDark,
   blueLight: blueLight,
-  white: surface,
+  white: white,
   gray: gray,
   grayLight: grayLight,
   red: red,
