@@ -1,4 +1,5 @@
 import { Pressable, Text, View } from "react-native";
+import { Colors } from "../../constants/theme";
 
 type DateItemProps = {
   date: string;
@@ -19,7 +20,7 @@ export default function DateItem({
     <Pressable
       onPress={onPress}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      android_ripple={{ color: "rgba(56, 189, 248, 0.24)" }}
+      android_ripple={{ color: Colors.blueLight }}
       accessibilityRole="button"
       style={{
         flex: 1,
@@ -34,7 +35,7 @@ export default function DateItem({
       <View
         style={{
           alignItems: "center",
-          backgroundColor: highlighted ? "#e5e7eb" : "transparent",
+          backgroundColor: highlighted ? Colors.grayLight : "transparent",
           paddingHorizontal: 9,
           paddingVertical: 4,
           minWidth: 52,
@@ -48,7 +49,7 @@ export default function DateItem({
             width: 32,
             height: 2,
             borderRadius: 1,
-            backgroundColor: selected ? "#38bdf8" : "transparent",
+            backgroundColor: selected ? Colors.blueLight : "transparent",
           }}
         />
       </View>
