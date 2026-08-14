@@ -1,17 +1,15 @@
-import { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
 import { getWeekDays } from "@/src/utils/date";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+
+const getInitialDate = () => {
+  const weekDays = getWeekDays();
+  return weekDays.find((d) => d.isToday)?.fullDate || weekDays[0].fullDate;
+};
 
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState("");
-
-  useEffect(() => {
-    const weekDays = getWeekDays();
-    const today =
-      weekDays.find((d) => d.isToday)?.fullDate || weekDays[0].fullDate;
-    setSelectedDate(today);
-  }, []);
+  const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
   return (
     <View style={styles.container}>
