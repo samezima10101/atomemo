@@ -1,34 +1,22 @@
-import DateItem from "@/src/components/calendar/DateItem";
+import WeekCalendar from "@/src/components/calendar/WeekCalendar";
+import { getWeekDays } from "@/src/utils/date";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-const dateItems = [
-  { date: "1", content: "月" },
-  { date: "2", content: "火" },
-  { date: "3", content: "水" },
-  { date: "4", content: "木" },
-  { date: "5", content: "金" },
-  { date: "6", content: "土" },
-  { date: "7", content: "日" },
-];
+const getInitialDate = () => {
+  const weekDays = getWeekDays();
+  return weekDays.find((d) => d.isToday)?.fullDate || weekDays[0].fullDate;
+};
 
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState("1");
+  const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
   return (
     <View style={styles.container}>
-      <View style={styles.weekRow}>
-        {dateItems.map((item) => (
-          <DateItem
-            key={item.date}
-            date={item.date}
-            content={item.content}
-            selected={item.date === selectedDate}
-            highlighted={item.date === "2" && item.content === "火"}
-            onPress={() => setSelectedDate(item.date)}
-          />
-        ))}
-      </View>
+      <WeekCalendar
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
+      />
     </View>
   );
 }
@@ -38,10 +26,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     padding: 24,
-  },
-  weekRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
 });
