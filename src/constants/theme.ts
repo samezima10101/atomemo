@@ -6,6 +6,7 @@ const blueLight = "#D7EAF6";
 const white = "#FFFFFF";
 const gray = "#D9D9D9";
 const grayLight = "#e5e7eb";
+const grayDark = "#4B5563";
 const red = "#FF0909";
 
 export const Colors = {
@@ -15,6 +16,7 @@ export const Colors = {
   white: white,
   gray: gray,
   grayLight: grayLight,
+  grayDark: grayDark,
   red: red,
 };
 
