@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>あとメモ</Text>
+      <Text style={styles.title}>振り返り</Text>
     </View>
   );
 }
@@ -11,11 +11,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
     padding: 24,
   },
   title: {
     fontSize: 24,
+    lineHeight: 32,
     fontWeight: "700",
   },
 });
