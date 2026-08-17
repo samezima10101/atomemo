@@ -27,11 +27,11 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <TaskList tasks={tasks} />
       <WeekCalendar
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
       />
+      <TaskList tasks={tasks} />
     </View>
   );
 }
