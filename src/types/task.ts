@@ -3,7 +3,7 @@ type Task = {
   title: string;
   description: string | null;
   taskDate: string;
-  isComplleted: boolean;
+  isCompleted: boolean;
   reflection: string | null;
   completedAt: string | null;
 };

@@ -1,9 +1,22 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 bg-white p-6">
-      <Text className="text-4xl font-bold">あとメモ</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Dayモード</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    lineHeight: 32,
+    fontWeight: "700",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    padding: 24,
+  },
+});
