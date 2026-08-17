@@ -6,7 +6,7 @@ export default function TaskLayout() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="tasks/new" options={{ headerShown: false }} />
+      <Stack.Screen name="tasks/edit" options={{ headerShown: false }} />
     </Stack>
   );
 }

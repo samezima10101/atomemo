@@ -1,8 +1,10 @@
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
 import { getWeekDays } from "@/src/utils/date";
+import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import TaskList, { type Task } from "../../src/components/task/TaskList";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import TaskList, { type Task } from "@/src/components/task/TaskList";
 
 const tasks: Task[] = [
   {
@@ -21,7 +23,6 @@ const getInitialDate = () => {
   return weekDays.find((d) => d.isToday)?.fullDate || weekDays[0].fullDate;
 };
 
-
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
@@ -32,6 +33,12 @@ export default function HomeScreen() {
         onSelectDate={setSelectedDate}
       />
       <TaskList tasks={tasks} />
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => router.push("/tasks/edit")}
+      >
+        <AntDesign name="plus" size={32} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -41,5 +48,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     padding: 24,
+  },
+  fab: {
+    position: "absolute",
+    bottom: 40,
+    right: 40,
+    borderRadius: 32,
   },
 });
