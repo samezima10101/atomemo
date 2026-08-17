@@ -1,9 +1,21 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 bg-white p-6">
-      <Text className="text-2xl font-bold">あとメモ</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>あとメモ</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+  },
+});
