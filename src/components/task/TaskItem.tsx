@@ -1,7 +1,14 @@
 import { Colors } from "@/src/constants/theme";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Keyboard,
+} from "react-native";
 
 type TaskItemProps = {
   title: string;
@@ -15,11 +22,33 @@ export default function TaskItem({
   completed,
 }: TaskItemProps) {
   const [isCompleted, setIsCompleted] = useState(completed || false);
+  const [comment, setComment] = useState("");
+  const [savedComment, setSavedComment] = useState("");
+  const [isCommentInputVisible, setIsCommentInputVisible] = useState(true);
+  const [commentInputHeight, setCommentInputHeight] = useState(48);
 
   // アイコンがタップされた時に状態を反転させる関数
   const toggleComplete = () => {
-    setIsCompleted(!isCompleted);
+    if (!isCompleted) {
+      setIsCommentInputVisible(true);
+    }
+    setIsCompleted((current) => !current);
   };
+
+  const saveComment = () => {
+    Keyboard.dismiss();
+    setSavedComment(comment.trim());
+    setComment("");
+    setCommentInputHeight(48);
+    setIsCommentInputVisible(false);
+  };
+
+  const handleCommentChange = (value: string) => {
+    setComment(value);
+    const lineCount = value.split("\n").length;
+    setCommentInputHeight(Math.max(48, lineCount * 24 + 24));
+  };
+
   return (
     <View style={styles.container}>
       {/* 左側のタイムライン */}
@@ -43,6 +72,45 @@ export default function TaskItem({
         </View>
 
         {subtasks && <Text style={styles.subtasks}>{subtasks}</Text>}
+
+        {isCompleted && isCommentInputVisible && (
+          <View style={styles.commentRow}>
+            <View
+              style={[
+                styles.commentInputBox,
+                { height: Math.max(54, commentInputHeight + 6) },
+              ]}
+            >
+              <TextInput
+                value={comment}
+                onChangeText={handleCommentChange}
+                placeholder="コメントを入力"
+                placeholderTextColor={Colors.gray}
+                style={[styles.commentInput, { height: commentInputHeight }]}
+                autoFocus
+                multiline
+                returnKeyType="done"
+                onSubmitEditing={saveComment}
+              />
+              <TouchableOpacity
+                accessibilityLabel="コメントを確定"
+                onPress={saveComment}
+                style={styles.commentButton}
+              >
+                <View style={styles.commentButtonInner}>
+                  <MaterialIcons name="check" size={38} color={Colors.blue} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {isCompleted && !isCommentInputVisible && savedComment && (
+          <View style={styles.savedCommentBox}>
+            <Text style={styles.savedComment}>{savedComment}</Text>
+          </View>
+        )}
+
       </View>
     </View>
   );
@@ -55,7 +123,7 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     width: 60,
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   uncheckCircle: {
     width: 32,
@@ -93,5 +161,70 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 20,
     lineHeight: 30,
+  },
+  commentRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 18,
+  },
+  commentInputBox: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    borderWidth: 2,
+    borderColor: Colors.blue,
+    borderRadius: 7,
+    backgroundColor: Colors.white,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  commentInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 18,
+    lineHeight: 24,
+    color: Colors.black,
+    textAlignVertical: "top",
+  },
+  commentButton: {
+    alignSelf: "flex-start",
+    width: 60,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginVertical: 3,
+    marginRight: 4,
+    backgroundColor: Colors.white,
+    borderRadius: 26,
+  },
+  commentButtonInner: {
+    width: 42,
+    height: 42,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.blueLight,
+    borderRadius: 5,
+  },
+  savedCommentBox: {
+    marginTop: 18,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    minHeight: 54,
+    justifyContent: "center",
+    backgroundColor: Colors.blueLight,
+    borderRadius: 7,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  savedComment: {
+    fontSize: 18,
+    lineHeight: 24,
+    color: Colors.black,
   },
 });
