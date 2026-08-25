@@ -1,9 +1,11 @@
-type Task = {
+export type Task = {
   id: string;
+  user_id: string;
   title: string;
   description: string | null;
-  taskDate: string;
-  isCompleted: boolean;
+  target_date: string;
+  created_at: string;
+  is_completed: boolean;
+  completed_at: string | null;
   reflection: string | null;
-  completedAt: string | null;
 };

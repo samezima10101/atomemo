@@ -1,10 +1,16 @@
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
+import TaskList, { type Task } from "@/src/components/task/TaskList";
+import { useAuth } from "@/src/features/auth/AuthContext";
 import { getWeekDays } from "@/src/utils/date";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import TaskList, { type Task } from "@/src/components/task/TaskList";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const tasks: Task[] = [
   {
@@ -25,6 +31,22 @@ const getInitialDate = () => {
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
+  const { user, isLoading, signInDev } = useAuth();
+
+  useEffect(() => {
+    // 起動時に未ログインであれば開発用ログインを実行
+    if (!isLoading && !user) {
+      signInDev();
+    }
+  }, [isLoading, user]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#3b82f6" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -44,6 +66,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: "white",
