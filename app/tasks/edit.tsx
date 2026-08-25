@@ -3,7 +3,16 @@ import { useAuth } from "@/src/features/auth/AuthContext";
 import { useTasks } from "@/src/features/tasks/hooks/useTasks";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 export default function EditScreen() {
   // [taskId].tsxから遷移してきた場合、URLパラメータからtaskIdを取得
@@ -40,41 +49,46 @@ export default function EditScreen() {
           headerShown: false,
         }}
       />
-      <View style={styles.container}>
-        {/* ヘッダーエリア */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.backButton}
-          >
-            <AntDesign name="left" size={18} color="#0f172a" />
-            <Text style={styles.backText}>戻る</Text>
-          </TouchableOpacity>
-
-          {/* 既存タスクの編集時のみ削除ボタンを表示する制御 */}
-          {taskId && (
-            <TouchableOpacity style={styles.deleteButton}>
-              <MaterialCommunityIcons
-                name="trash-can-outline"
-                size={26}
-                color="#ef4444"
-              />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          {/* ヘッダーエリア */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.backButton}
+            >
+              <AntDesign name="left" size={18} color="#0f172a" />
+              <Text style={styles.backText}>戻る</Text>
             </TouchableOpacity>
+
+            {/* 既存タスクの編集時のみ削除ボタンを表示する制御 */}
+            {taskId && (
+              <TouchableOpacity style={styles.deleteButton}>
+                <MaterialCommunityIcons
+                  name="trash-can-outline"
+                  size={26}
+                  color="#ef4444"
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* エラーメッセージ表示 */}
+          {error && (
+            <Text style={{ color: "red", marginVertical: 10 }}>{error}</Text>
           )}
-        </View>
 
-        {/* エラーメッセージ表示 */}
-        {error && (
-          <Text style={{ color: "red", marginVertical: 10 }}>{error}</Text>
-        )}
-
-        {/* フォームコンポーネントの呼び出し */}
-        <TaskForm
-          onSubmit={handleFormSubmit}
-          isSubmitting={isSubmitting}
-          // TODO: 編集モード(taskIdがある)の場合は、初期値としてDBから取得したデータをinitialPropsへ渡す処理を追記する
-        />
-      </View>
+          {/* フォームコンポーネントの呼び出し */}
+          <TaskForm
+            onSubmit={handleFormSubmit}
+            isSubmitting={isSubmitting}
+            // TODO: 編集モード(taskIdがある)の場合は、初期値としてDBから取得したデータをinitialPropsへ渡す処理を追記する
+          />
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </>
   );
 }
