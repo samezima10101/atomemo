@@ -1,4 +1,4 @@
-import { EvilIcons, SimpleLineIcons } from "@expo/vector-icons";
+import { AppIcon } from "@/src/components/common/AppIcon";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import {
@@ -57,7 +57,7 @@ export const TaskForm = ({
     <>
       {/* タイトルエリア */}
       <View style={styles.titleSection}>
-        <View style={styles.blueCircleIcon} />
+        <AppIcon name="circle" size={28} />
         <TextInput
           placeholder="タイトルを入力"
           value={title}
@@ -74,7 +74,7 @@ export const TaskForm = ({
         {/* 日付表示行 */}
         <View style={styles.detailRow}>
           <View style={styles.iconColumn}>
-            <EvilIcons name="calendar" size={32} color="#0f172a" />
+            <AppIcon name="calendar" size={28} />
           </View>
           {/* 日付をタップするとピッカーを表示 */}
           <TouchableOpacity
@@ -88,7 +88,7 @@ export const TaskForm = ({
         {/* 内容入力行 */}
         <View style={styles.detailRowTop}>
           <View style={styles.iconColumn}>
-            <SimpleLineIcons name="note" size={24} color="#0f172a" />
+            <AppIcon name="note" size={24} />
           </View>
           <View style={styles.contentBox}>
             <TextInput
@@ -173,13 +173,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 8,
     gap: 16,
-  },
-  blueCircleIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 3,
-    borderColor: "#3b82f6",
   },
   titleInput: {
     flex: 1,
