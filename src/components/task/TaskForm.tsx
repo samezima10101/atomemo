@@ -26,6 +26,14 @@ type TaskFormProps = {
   }) => void;
 };
 
+const formatDateForDatabase = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+const parseDatabaseDate = (date: string) => {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
 export const TaskForm = ({
   initialTitle = "",
   initialDescription = "",
@@ -46,11 +54,11 @@ export const TaskForm = ({
   };
 
   const handleDateChange = (_event: unknown, selectedDate?: Date) => {
-    if (selectedDate) setTargetDate(selectedDate.toISOString());
+    if (selectedDate) setTargetDate(formatDateForDatabase(selectedDate));
     if (Platform.OS !== "ios") setIsDatePickerVisible(false);
   };
 
-  const selectedDate = new Date(targetDate);
+  const selectedDate = parseDatabaseDate(targetDate);
   const formattedTargetDate = `${selectedDate.getMonth() + 1}月${selectedDate.getDate()}日`;
 
   return (

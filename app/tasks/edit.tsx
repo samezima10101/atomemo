@@ -16,7 +16,10 @@ import {
 
 export default function EditScreen() {
   // [taskId].tsxから遷移してきた場合、URLパラメータからtaskIdを取得
-  const { taskId } = useLocalSearchParams<{ taskId: string }>();
+  const { taskId, targetDate } = useLocalSearchParams<{
+    taskId: string;
+    targetDate: string;
+  }>();
   const { submitTask, isSubmitting, error } = useTasks();
   const { user } = useAuth();
 
@@ -85,6 +88,7 @@ export default function EditScreen() {
           <TaskForm
             onSubmit={handleFormSubmit}
             isSubmitting={isSubmitting}
+            initialTargetDate={targetDate}
             // TODO: 編集モード(taskIdがある)の場合は、初期値としてDBから取得したデータをinitialPropsへ渡す処理を追記する
           />
         </KeyboardAvoidingView>

@@ -6,9 +6,10 @@ import TaskItem from "./TaskItem";
 
 type TaskListProps = {
   tasks: Task[];
+  selectedDate: string;
 };
 
-export default function TaskList({ tasks }: TaskListProps) {
+export default function TaskList({ tasks, selectedDate }: TaskListProps) {
   return (
     <View>
       {tasks.map((task) => (
@@ -22,7 +23,12 @@ export default function TaskList({ tasks }: TaskListProps) {
       <View style={styles.addRow}>
         <TouchableOpacity
           style={styles.addLeftColumn}
-          onPress={() => router.push("/tasks/edit")}
+          onPress={() =>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            })
+          }
         >
           <AntDesign name="plus-circle" size={32} />
         </TouchableOpacity>

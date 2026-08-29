@@ -94,11 +94,16 @@ export default function HomeScreen() {
       ) : taskError ? (
         <Text style={styles.errorText}>{taskError}</Text>
       ) : (
-        <TaskList tasks={tasks} />
+        <TaskList tasks={tasks} selectedDate={selectedDate} />
       )}
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push("/tasks/edit")}
+        onPress={() =>
+          router.push({
+            pathname: "/tasks/edit",
+            params: { targetDate: selectedDate },
+          })
+        }
       >
         <AntDesign name="plus" size={32} />
       </TouchableOpacity>
