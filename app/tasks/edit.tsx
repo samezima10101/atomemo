@@ -1,4 +1,5 @@
 import { TaskForm } from "@/src/components/task/TaskForm";
+import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { useTasks } from "@/src/features/tasks/hooks/useTasks";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -63,7 +64,7 @@ export default function EditScreen() {
               onPress={() => router.back()}
               style={styles.backButton}
             >
-              <AntDesign name="left" size={18} color="#0f172a" />
+              <AntDesign name="left" size={18} color={Colors.slate900} />
               <Text style={styles.backText}>戻る</Text>
             </TouchableOpacity>
 
@@ -73,7 +74,7 @@ export default function EditScreen() {
                 <MaterialCommunityIcons
                   name="trash-can-outline"
                   size={26}
-                  color="#ef4444"
+                  color={Colors.redLight}
                 />
               </TouchableOpacity>
             )}
@@ -81,7 +82,7 @@ export default function EditScreen() {
 
           {/* エラーメッセージ表示 */}
           {error && (
-            <Text style={{ color: "red", marginVertical: 10 }}>{error}</Text>
+            <Text style={{ color: Colors.red, marginVertical: 10 }}>{error}</Text>
           )}
 
           {/* フォームコンポーネントの呼び出し */}
@@ -100,7 +101,7 @@ export default function EditScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.white,
     paddingHorizontal: 20,
     paddingTop: 54,
   },
@@ -113,13 +114,13 @@ const styles = StyleSheet.create({
   backButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.white,
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 999,
     gap: 6,
     // iOS shadow
-    shadowColor: "#000000",
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 6,
@@ -129,14 +130,14 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#0f172a",
+    color: Colors.slate900,
   },
   deleteButton: {
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.white,
     padding: 10,
     borderRadius: 999,
     // iOS shadow
-    shadowColor: "#000000",
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 6,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   errorText: {
-    color: "#ef4444",
+    color: Colors.redLight,
     marginBottom: 16,
     paddingHorizontal: 8,
   },

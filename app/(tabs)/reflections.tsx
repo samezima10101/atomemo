@@ -1,3 +1,4 @@
+import { Colors } from "@/src/constants/theme";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function HomeScreen() {
@@ -11,7 +12,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.white,
     padding: 24,
   },
   title: {

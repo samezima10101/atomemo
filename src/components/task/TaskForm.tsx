@@ -1,3 +1,4 @@
+import { Colors } from "@/src/constants/theme";
 import { EvilIcons, SimpleLineIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
@@ -71,8 +72,8 @@ export const TaskForm = ({
           value={title}
           onChangeText={setTitle}
           caretHidden={false}
-          selectionColor="#2563eb"
-          cursorColor="#2563eb"
+          selectionColor={Colors.blue600}
+          cursorColor={Colors.blue600}
           style={styles.titleInput}
         />
       </View>
@@ -82,7 +83,7 @@ export const TaskForm = ({
         {/* 日付表示行 */}
         <View style={styles.detailRow}>
           <View style={styles.iconColumn}>
-            <EvilIcons name="calendar" size={32} color="#0f172a" />
+            <EvilIcons name="calendar" size={32} color={Colors.slate900} />
           </View>
           {/* 日付をタップするとピッカーを表示 */}
           <TouchableOpacity
@@ -96,7 +97,7 @@ export const TaskForm = ({
         {/* 内容入力行 */}
         <View style={styles.detailRowTop}>
           <View style={styles.iconColumn}>
-            <SimpleLineIcons name="note" size={24} color="#0f172a" />
+            <SimpleLineIcons name="note" size={24} color={Colors.slate900} />
           </View>
           <View style={styles.contentBox}>
             <TextInput
@@ -106,8 +107,8 @@ export const TaskForm = ({
               multiline
               submitBehavior="newline"
               caretHidden={false}
-              selectionColor="#2563eb"
-              cursorColor="#2563eb"
+              selectionColor={Colors.blue600}
+              cursorColor={Colors.blue600}
               inputAccessoryViewID={
                 Platform.OS === "ios" ? descriptionInputAccessoryId : undefined
               }
@@ -187,16 +188,16 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     borderWidth: 3,
-    borderColor: "#3b82f6",
+    borderColor: Colors.blue500,
   },
   titleInput: {
     flex: 1,
     fontSize: 22,
     fontWeight: "600",
-    color: "#0f172a", // ユーザーが入力した文字は濃く表示
+    color: Colors.slate900, // ユーザーが入力した文字は濃く表示
   },
   detailCard: {
-    backgroundColor: "#f8fafc",
+    backgroundColor: Colors.slate50,
     borderRadius: 16,
     padding: 16,
     gap: 16,
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   dateBadge: {
-    backgroundColor: "#e2e8f0",
+    backgroundColor: Colors.slate200,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -225,20 +226,20 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#3b82f6",
+    color: Colors.blue500,
   },
   dateModalBackdrop: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(15, 23, 42, 0.35)",
+    backgroundColor: Colors.slateBackdrop,
     padding: 20,
   },
   dateModalCard: {
     width: "100%",
     maxWidth: 360,
     borderRadius: 16,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     padding: 16,
   },
   dateModalHeader: {
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   dateModalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#0f172a",
+    color: Colors.slate900,
   },
   dateModalCloseButton: {
     paddingHorizontal: 8,
@@ -259,11 +260,11 @@ const styles = StyleSheet.create({
   dateModalCloseText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#2563eb",
+    color: Colors.blue600,
   },
   contentBox: {
     flex: 1,
-    backgroundColor: "#e2e8f0",
+    backgroundColor: Colors.slate200,
     borderRadius: 12,
     padding: 16,
     minHeight: 120,
@@ -271,14 +272,14 @@ const styles = StyleSheet.create({
   contentInput: {
     flex: 1,
     fontSize: 18,
-    color: "#0f172a", // ユーザーが入力した文字は濃く表示
+    color: Colors.slate900, // ユーザーが入力した文字は濃く表示
     textAlignVertical: "top", // Androidでテキストが中央揃えになるのを防ぐ
   },
   keyboardToolbar: {
     alignItems: "flex-end",
-    backgroundColor: "#f8fafc",
+    backgroundColor: Colors.slate50,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#cbd5e1",
+    borderTopColor: Colors.slate300,
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   keyboardDismissText: {
-    color: "#2563eb",
+    color: Colors.blue600,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   doneButton: {
-    backgroundColor: "#dbeafe",
+    backgroundColor: Colors.blue100,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 999,
@@ -305,6 +306,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     fontSize: 22,
     fontWeight: "500",
-    color: "#3b82f6",
+    color: Colors.blue500,
   },
 });

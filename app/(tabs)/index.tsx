@@ -1,5 +1,6 @@
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
 import TaskList from "@/src/components/task/TaskList";
+import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
 import type { Task } from "@/src/types/task";
@@ -78,7 +79,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#3b82f6" />
+        <ActivityIndicator size="large" color={Colors.blue500} />
       </View>
     );
   }
@@ -90,7 +91,7 @@ export default function HomeScreen() {
         onSelectDate={setSelectedDate}
       />
       {isTasksLoading ? (
-        <ActivityIndicator size="small" color="#3b82f6" />
+        <ActivityIndicator size="small" color={Colors.blue500} />
       ) : taskError ? (
         <Text style={styles.errorText}>{taskError}</Text>
       ) : (
@@ -119,11 +120,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     padding: 24,
   },
   errorText: {
-    color: "redLight",
+    color: Colors.redLight,
     marginTop: 16,
   },
   fab: {
