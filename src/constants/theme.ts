@@ -8,6 +8,7 @@ const gray = "#D9D9D9";
 const grayLight = "#e5e7eb";
 const grayDark = "#4B5563";
 const red = "#FF0909";
+const redLight = "#ef4444";
 const black = "#000000";
 
 export const Colors = {
@@ -19,6 +20,7 @@ export const Colors = {
   grayLight: grayLight,
   grayDark: grayDark,
   red: red,
+  redLight: redLight,
   black: black,
 };
 
