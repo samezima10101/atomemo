@@ -1,35 +1,34 @@
+import type { Task } from "@/src/types/task";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TaskItem from "./TaskItem";
-import { Colors } from "@/src/constants/theme";
-
-export type Task = {
-  id: string;
-  title: string;
-  subtasks?: string;
-  completed?: boolean;
-};
 
 type TaskListProps = {
   tasks: Task[];
+  selectedDate: string;
 };
 
-export default function TaskList({ tasks }: TaskListProps) {
+export default function TaskList({ tasks, selectedDate }: TaskListProps) {
   return (
     <View>
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
           title={task.title}
-          subtasks={task.subtasks}
-          completed={task.completed}
+          subtasks={task.description ?? undefined}
+          completed={task.is_completed}
         />
       ))}
       <View style={styles.addRow}>
         <TouchableOpacity
           style={styles.addLeftColumn}
-          onPress={() => router.push("/tasks/edit")}
+          onPress={() =>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            })
+          }
         >
           <AntDesign name="plus-circle" size={32} />
         </TouchableOpacity>
