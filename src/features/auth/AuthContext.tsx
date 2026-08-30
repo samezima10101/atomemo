@@ -1,13 +1,12 @@
 import { supabase } from "@/src/lib/supabase";
 import { Session, User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { authService } from "./authService";
 
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  signInDev: () => Promise<void>;
+  signInAnonymously: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -40,22 +39,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  // 開発用テストユーザーでのサインイン関数
-  const signInDev = async () => {
+  // 端末ごとの匿名サインイン処理
+  const signInAnonymously = async () => {
     try {
-      await authService.signInWithPassword("test@example.com", "password");
+      const { error } = await supabase.auth.signInAnonymously();
+      if (error) throw error;
     } catch (error) {
-      console.error("Dev sign-in failed:", error);
+      console.error("Anonymous sign-in failed:", error);
     }
   };
 
   const signOut = async () => {
-    await authService.signOut();
+    await supabase.auth.signOut();
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, session, isLoading, signInDev, signOut }}
+      value={{ user, session, isLoading, signInAnonymously, signOut }}
     >
       {children}
     </AuthContext.Provider>

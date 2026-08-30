@@ -23,18 +23,18 @@ const getInitialDate = () => {
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
-  const { user, isLoading, signInDev } = useAuth();
+
+  const { user, isLoading, signInAnonymously } = useAuth();
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isTasksLoading, setIsTasksLoading] = useState(false);
   const [taskError, setTaskError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 起動時に未ログインであれば開発用ログインを実行
     if (!isLoading && !user) {
-      signInDev();
+      signInAnonymously();
     }
-  }, [isLoading, signInDev, user]);
+  }, [isLoading, signInAnonymously, user]);
 
   useEffect(() => {
     if (!user) {
