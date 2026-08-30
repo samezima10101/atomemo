@@ -2,12 +2,12 @@ import { Colors } from "@/src/constants/theme";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Keyboard,
 } from "react-native";
 
 type TaskItemProps = {
@@ -98,7 +98,11 @@ export default function TaskItem({
                 style={styles.commentButton}
               >
                 <View style={styles.commentButtonInner}>
-                  <MaterialIcons name="check" size={38} color={Colors.blue} />
+                  <MaterialIcons
+                    name="check"
+                    size={38}
+                    color={Colors.themeMain}
+                  />
                 </View>
               </TouchableOpacity>
             </View>
@@ -110,7 +114,6 @@ export default function TaskItem({
             <Text style={styles.savedComment}>{savedComment}</Text>
           </View>
         )}
-
       </View>
     </View>
   );
@@ -133,7 +136,7 @@ const styles = StyleSheet.create({
   },
   verticalLine: {
     width: 3,
-    backgroundColor: Colors.blue,
+    backgroundColor: Colors.themeMain,
     flexGrow: 1,
     marginTop: 8,
     marginBottom: 8,
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     borderWidth: 2,
-    borderColor: Colors.blue,
+    borderColor: Colors.themeMain,
     borderRadius: 7,
     backgroundColor: Colors.white,
     shadowColor: Colors.black,
@@ -205,7 +208,7 @@ const styles = StyleSheet.create({
     height: 42,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.blueLight,
+    backgroundColor: Colors.themeLight,
     borderRadius: 5,
   },
   savedCommentBox: {
@@ -214,7 +217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     minHeight: 54,
     justifyContent: "center",
-    backgroundColor: Colors.blueLight,
+    backgroundColor: Colors.themeLight,
     borderRadius: 7,
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 3 },

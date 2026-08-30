@@ -64,7 +64,7 @@ export default function EditScreen() {
               onPress={() => router.back()}
               style={styles.backButton}
             >
-              <AntDesign name="left" size={18} color={Colors.slate900} />
+              <AntDesign name="left" size={18} color={Colors.black} />
               <Text style={styles.backText}>戻る</Text>
             </TouchableOpacity>
 
@@ -74,7 +74,7 @@ export default function EditScreen() {
                 <MaterialCommunityIcons
                   name="trash-can-outline"
                   size={26}
-                  color={Colors.redLight}
+                  color={Colors.red}
                 />
               </TouchableOpacity>
             )}
@@ -82,7 +82,9 @@ export default function EditScreen() {
 
           {/* エラーメッセージ表示 */}
           {error && (
-            <Text style={{ color: Colors.red, marginVertical: 10 }}>{error}</Text>
+            <Text style={{ color: Colors.red, marginVertical: 10 }}>
+              {error}
+            </Text>
           )}
 
           {/* フォームコンポーネントの呼び出し */}
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 16,
     fontWeight: "500",
-    color: Colors.slate900,
+    color: Colors.black,
   },
   deleteButton: {
     backgroundColor: Colors.white,
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   errorText: {
-    color: Colors.redLight,
+    color: Colors.red,
     marginBottom: 16,
     paddingHorizontal: 8,
   },

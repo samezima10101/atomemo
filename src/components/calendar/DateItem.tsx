@@ -20,7 +20,7 @@ export default function DateItem({
     <Pressable
       onPress={onPress}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      android_ripple={{ color: Colors.blueLight }}
+      android_ripple={{ color: Colors.themeLight }}
       accessibilityRole="button"
       style={styles.button}
     >
@@ -37,7 +37,7 @@ export default function DateItem({
         <View
           style={[
             styles.underline,
-            { backgroundColor: selected ? Colors.blue : "transparent" },
+            { backgroundColor: selected ? Colors.themeMain : "transparent" },
           ]}
         />
       </View>
