@@ -141,6 +141,8 @@ export const TaskForm = ({
               display={Platform.OS === "ios" ? "inline" : "calendar"}
               locale="ja-JP"
               onChange={handleDateChange}
+              themeVariant="light"
+              textColor="black"
             />
           </View>
         </View>
