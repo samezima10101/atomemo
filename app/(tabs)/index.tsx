@@ -23,18 +23,18 @@ const getInitialDate = () => {
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
-  const { user, isLoading, signInDev } = useAuth();
+
+  const { user, isLoading, signInAnonymously } = useAuth();
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isTasksLoading, setIsTasksLoading] = useState(false);
   const [taskError, setTaskError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 起動時に未ログインであれば開発用ログインを実行
     if (!isLoading && !user) {
-      signInDev();
+      signInAnonymously();
     }
-  }, [isLoading, signInDev, user]);
+  }, [isLoading, signInAnonymously, user]);
 
   useEffect(() => {
     if (!user) {
@@ -79,7 +79,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color={Colors.blue500} />
+        <ActivityIndicator size="large" color={Colors.themeMain} />
       </View>
     );
   }
@@ -91,7 +91,7 @@ export default function HomeScreen() {
         onSelectDate={setSelectedDate}
       />
       {isTasksLoading ? (
-        <ActivityIndicator size="small" color={Colors.blue500} />
+        <ActivityIndicator size="small" color={Colors.themeMain} />
       ) : taskError ? (
         <Text style={styles.errorText}>{taskError}</Text>
       ) : (
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   errorText: {
-    color: Colors.redLight,
+    color: Colors.red,
     marginTop: 16,
   },
   fab: {

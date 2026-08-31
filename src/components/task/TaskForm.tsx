@@ -72,8 +72,8 @@ export const TaskForm = ({
           value={title}
           onChangeText={setTitle}
           caretHidden={false}
-          selectionColor={Colors.blue600}
-          cursorColor={Colors.blue600}
+          selectionColor={Colors.themeDark}
+          cursorColor={Colors.themeDark}
           style={styles.titleInput}
         />
       </View>
@@ -83,7 +83,7 @@ export const TaskForm = ({
         {/* 日付表示行 */}
         <View style={styles.detailRow}>
           <View style={styles.iconColumn}>
-            <EvilIcons name="calendar" size={32} color={Colors.slate900} />
+            <EvilIcons name="calendar" size={32} color={Colors.black} />
           </View>
           {/* 日付をタップするとピッカーを表示 */}
           <TouchableOpacity
@@ -97,7 +97,7 @@ export const TaskForm = ({
         {/* 内容入力行 */}
         <View style={styles.detailRowTop}>
           <View style={styles.iconColumn}>
-            <SimpleLineIcons name="note" size={24} color={Colors.slate900} />
+            <SimpleLineIcons name="note" size={24} color={Colors.black} />
           </View>
           <View style={styles.contentBox}>
             <TextInput
@@ -107,8 +107,8 @@ export const TaskForm = ({
               multiline
               submitBehavior="newline"
               caretHidden={false}
-              selectionColor={Colors.blue600}
-              cursorColor={Colors.blue600}
+              selectionColor={Colors.themeDark}
+              cursorColor={Colors.themeDark}
               inputAccessoryViewID={
                 Platform.OS === "ios" ? descriptionInputAccessoryId : undefined
               }
@@ -141,6 +141,8 @@ export const TaskForm = ({
               display={Platform.OS === "ios" ? "inline" : "calendar"}
               locale="ja-JP"
               onChange={handleDateChange}
+              themeVariant="light"
+              textColor="black"
             />
           </View>
         </View>
@@ -188,16 +190,16 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     borderWidth: 3,
-    borderColor: Colors.blue500,
+    borderColor: Colors.themeMain,
   },
   titleInput: {
     flex: 1,
     fontSize: 22,
     fontWeight: "600",
-    color: Colors.slate900, // ユーザーが入力した文字は濃く表示
+    color: Colors.black, // ユーザーが入力した文字は濃く表示
   },
   detailCard: {
-    backgroundColor: Colors.slate50,
+    backgroundColor: Colors.grayLight,
     borderRadius: 16,
     padding: 16,
     gap: 16,
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   dateBadge: {
-    backgroundColor: Colors.slate200,
+    backgroundColor: Colors.grayMidLight,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -226,7 +228,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: "500",
-    color: Colors.blue500,
+    color: Colors.themeMain,
   },
   dateModalBackdrop: {
     flex: 1,
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
   dateModalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: Colors.slate900,
+    color: Colors.black,
   },
   dateModalCloseButton: {
     paddingHorizontal: 8,
@@ -260,11 +262,11 @@ const styles = StyleSheet.create({
   dateModalCloseText: {
     fontSize: 15,
     fontWeight: "600",
-    color: Colors.blue600,
+    color: Colors.themeDark,
   },
   contentBox: {
     flex: 1,
-    backgroundColor: Colors.slate200,
+    backgroundColor: Colors.grayMidLight,
     borderRadius: 12,
     padding: 16,
     minHeight: 120,
@@ -272,14 +274,14 @@ const styles = StyleSheet.create({
   contentInput: {
     flex: 1,
     fontSize: 18,
-    color: Colors.slate900, // ユーザーが入力した文字は濃く表示
+    color: Colors.black, // ユーザーが入力した文字は濃く表示
     textAlignVertical: "top", // Androidでテキストが中央揃えになるのを防ぐ
   },
   keyboardToolbar: {
     alignItems: "flex-end",
-    backgroundColor: Colors.slate50,
+    backgroundColor: Colors.grayLight,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: Colors.slate300,
+    borderTopColor: Colors.gray,
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
@@ -288,7 +290,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   keyboardDismissText: {
-    color: Colors.blue600,
+    color: Colors.themeDark,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -298,7 +300,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   doneButton: {
-    backgroundColor: Colors.blue100,
+    backgroundColor: Colors.themeLight,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 999,
@@ -306,6 +308,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     fontSize: 22,
     fontWeight: "500",
-    color: Colors.blue500,
+    color: Colors.themeMain,
   },
 });
