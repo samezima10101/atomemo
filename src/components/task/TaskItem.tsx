@@ -1,6 +1,8 @@
+import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -8,35 +10,57 @@ import {
   View,
 } from "react-native";
 
-export type TaskItemProps = {
+type TaskItemProps = {
   title: string;
   subtasks?: string;
   completed?: boolean;
-  onToggle?: () => void;
 };
 
 export default function TaskItem({
   title,
   subtasks,
-  completed = false,
-  onToggle,
+  completed,
 }: TaskItemProps) {
+  const [isCompleted, setIsCompleted] = useState(completed || false);
+  const [comment, setComment] = useState("");
+  const [savedComment, setSavedComment] = useState("");
+  const [isCommentInputVisible, setIsCommentInputVisible] = useState(true);
+  const [commentInputHeight, setCommentInputHeight] = useState(48);
+
+  // アイコンがタップされた時に状態を反転させる関数
+  const toggleComplete = () => {
+    if (!isCompleted) {
+      setIsCommentInputVisible(true);
+    }
+    setIsCompleted((current) => !current);
+  };
+
+  const saveComment = () => {
+    Keyboard.dismiss();
+    setSavedComment(comment.trim());
+    setComment("");
+    setCommentInputHeight(48);
+    setIsCommentInputVisible(false);
+  };
+
+  const handleCommentChange = (value: string) => {
+    setComment(value);
+    const lineCount = value.split("\n").length;
+    setCommentInputHeight(Math.max(48, lineCount * 24 + 24));
+  };
+
   return (
     <View style={styles.container}>
-      {/* 左列：アイコン ＋ サブタスクの長さに追従する青い線 */}
-      <View style={styles.iconColumn}>
-        <TouchableOpacity
-          onPress={onToggle}
-          style={styles.checkButton}
-          activeOpacity={0.7}
-        >
-          <AppIcon name={completed ? "check" : "circle"} size={36} />
+      {/* 左側のタイムライン */}
+      <View style={styles.leftColumn}>
+        <TouchableOpacity onPress={toggleComplete}>
+          {isCompleted ? (
+            <AppIcon name="check" size={32} />
+          ) : (
+            <View style={styles.uncheckCircle} />
+          )}
         </TouchableOpacity>
-
-        {/* 青い線のエリア：最小高さを設定してサブタスク無しでも棒を表示 */}
-        <View style={styles.lineWrapper}>
-          <View style={styles.blueLine} />
-        </View>
+        <View style={styles.verticalLine} />
       </View>
 
       {/* 右側のタスク内容部分 */}
@@ -74,11 +98,7 @@ export default function TaskItem({
                 style={styles.commentButton}
               >
                 <View style={styles.commentButtonInner}>
-                  <MaterialIcons
-                    name="check"
-                    size={38}
-                    color={Colors.themeMain}
-                  />
+                  <AppIcon name="check" size={38} />
                 </View>
               </TouchableOpacity>
             </View>
@@ -98,14 +118,17 @@ export default function TaskItem({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    paddingVertical: 10,
-    paddingHorizontal: 8,
+    minHeight: 90,
   },
-  iconColumn: {
-    width: 48,
-    alignItems: "center",
-    alignSelf: "stretch",
+  leftColumn: {
+    width: 60,
+    alignItems: "flex-start",
+  },
+  uncheckCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
   },
   verticalLine: {
     width: 3,
@@ -114,31 +137,24 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
   },
-  lineWrapper: {
+  rightColumn: {
     flex: 1,
-    minHeight: 20, // サブタスクが無くても最低20pxの棒を表示
+    paddingBottom: 50,
+  },
+  titleRow: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingTop: 6,
-    paddingBottom: 4,
-  },
-  blueLine: {
-    width: 2,
-    height: "100%", // 親要素の高さに合わせて可変伸縮
-    backgroundColor: "#3b82f6",
-  },
-  content: {
-    flex: 1,
-    paddingTop: 2,
-    paddingBottom: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
-    color: "#0f172a",
   },
   completedTitle: {
     textDecorationLine: "line-through",
-    color: "#94a3b8",
+    color: Colors.gray,
+  },
+  moreIcon: {
+    marginLeft: 20,
   },
   subtasks: {
     marginTop: 16,
