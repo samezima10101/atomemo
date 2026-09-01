@@ -1,5 +1,5 @@
+import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -98,13 +98,9 @@ function SlidingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 style={styles.tabButton}
               >
                 {route.name === "index" ? (
-                  <Ionicons name="list" size={30} color={Colors.black} />
+                  <AppIcon name="tabList" size={30} />
                 ) : (
-                  <Ionicons
-                    name="document-text-outline"
-                    size={30}
-                    color={Colors.black}
-                  />
+                  <AppIcon name="tabMemo" size={30} />
                 )}
 
                 <Text style={styles.tabLabel}>{label}</Text>

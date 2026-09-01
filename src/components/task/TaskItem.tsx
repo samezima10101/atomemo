@@ -1,5 +1,5 @@
+import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   Keyboard,
@@ -55,7 +55,7 @@ export default function TaskItem({
       <View style={styles.leftColumn}>
         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
-            <AntDesign name="check-circle" size={32} />
+            <AppIcon name="check" size={32} />
           ) : (
             <View style={styles.uncheckCircle} />
           )}
@@ -98,11 +98,7 @@ export default function TaskItem({
                 style={styles.commentButton}
               >
                 <View style={styles.commentButtonInner}>
-                  <MaterialIcons
-                    name="check"
-                    size={38}
-                    color={Colors.themeMain}
-                  />
+                  <AppIcon name="check" size={38} />
                 </View>
               </TouchableOpacity>
             </View>

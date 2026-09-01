@@ -1,6 +1,10 @@
-const { getDefaultConfig } = require('expo/metro-config');
-const { withNativeWind } = require('nativewind/metro');
+const { getDefaultConfig } = require("expo/metro-config");
 
-const config = getDefaultConfig(__dirname);
+module.exports = (() => {
+  const config = getDefaultConfig(__dirname);
 
-module.exports = withNativeWind(config, { input: './global.css' });
+  // SVGをアセット(asset)として読み込めるように追加
+  config.resolver.assetExts.push("svg");
+
+  return config;
+})();

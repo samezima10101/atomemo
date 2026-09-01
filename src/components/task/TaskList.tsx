@@ -1,6 +1,7 @@
+import { AppIcon } from "@/src/components/common/AppIcon";
 import type { Task } from "@/src/types/task";
-import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TaskItem from "./TaskItem";
 
@@ -11,7 +12,7 @@ type TaskListProps = {
 
 export default function TaskList({ tasks, selectedDate }: TaskListProps) {
   return (
-    <View>
+    <View style={styles.container}>
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
@@ -20,6 +21,7 @@ export default function TaskList({ tasks, selectedDate }: TaskListProps) {
           completed={task.is_completed}
         />
       ))}
+
       <View style={styles.addRow}>
         <TouchableOpacity
           style={styles.addLeftColumn}
@@ -30,11 +32,16 @@ export default function TaskList({ tasks, selectedDate }: TaskListProps) {
             })
           }
         >
-          <AntDesign name="plus-circle" size={32} />
+          {/* 黒の○の中に＋が入ったSVGアイコン */}
+          <AppIcon name="icons8_plus" size={32} />
         </TouchableOpacity>
-        <View style={styles.addRightColumn}>
+        <TouchableOpacity
+          style={styles.addRightColumn}
+          onPress={() => router.push("/tasks/edit")}
+          activeOpacity={0.7}
+        >
           <Text style={styles.addText}>今日のタスクを追加する</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -43,21 +50,25 @@ export default function TaskList({ tasks, selectedDate }: TaskListProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 10,
   },
   addRow: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 8,
   },
   addLeftColumn: {
-    width: 60,
+    width: 48,
     alignItems: "center",
+    justifyContent: "center",
   },
   addRightColumn: {
     flex: 1,
   },
   addText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
+    color: "#0f172a",
   },
 });

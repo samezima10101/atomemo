@@ -1,11 +1,12 @@
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
+import { AppIcon } from "@/src/components/common/AppIcon";
 import TaskList from "@/src/components/task/TaskList";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
 import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
-import { AntDesign } from "@expo/vector-icons";
+
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -114,7 +115,7 @@ export default function HomeScreen() {
           })
         }
       >
-        <AntDesign name="plus" size={32} />
+        <AppIcon name="plus" size={32} />
       </TouchableOpacity>
     </View>
   );
@@ -130,6 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     padding: 24,
+    position: "relative",
   },
   errorText: {
     color: Colors.red,
@@ -137,8 +139,18 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    bottom: 40,
-    right: 40,
+    bottom: 30,
+    right: 24,
+    width: 64,
+    height: 64,
     borderRadius: 32,
+    backgroundColor: "#dbeafe", // Figma通りの水色・薄青背景
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
   },
 });
