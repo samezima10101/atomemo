@@ -6,8 +6,8 @@ import { getTasksByDate } from "@/src/features/reflections/services/reflectionSe
 import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
 import { AntDesign } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -30,51 +30,59 @@ export default function HomeScreen() {
   const [isTasksLoading, setIsTasksLoading] = useState(false);
   const [taskError, setTaskError] = useState<string | null>(null);
 
+  {
+    /*匿名ログイン処理 */
+  }
   useEffect(() => {
     if (!isLoading && !user) {
       signInAnonymously();
     }
   }, [isLoading, signInAnonymously, user]);
 
-  useEffect(() => {
-    if (!user) {
-      setTasks([]);
-      return;
-    }
-
-    let isCancelled = false;
-
-    const loadTasks = async () => {
-      setIsTasksLoading(true);
-      setTaskError(null);
-
-      try {
-        const data = await getTasksByDate(user.id, selectedDate);
-
-        if (!isCancelled) {
-          setTasks(data);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          setTaskError(
-            error instanceof Error
-              ? error.message
-              : "タスクの取得に失敗しました。",
-          );
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsTasksLoading(false);
-        }
+  {
+    /*画面がフォーカスされるたびにレンダリングする */
+  }
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) {
+        setTasks([]);
+        return;
       }
-    };
 
-    loadTasks();
+      let isCancelled = false;
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [selectedDate, user]);
+      const loadTasks = async () => {
+        setIsTasksLoading(true);
+        setTaskError(null);
+
+        try {
+          const data = await getTasksByDate(user.id, selectedDate);
+
+          if (!isCancelled) {
+            setTasks(data);
+          }
+        } catch (error) {
+          if (!isCancelled) {
+            setTaskError(
+              error instanceof Error
+                ? error.message
+                : "タスクの取得に失敗しました。",
+            );
+          }
+        } finally {
+          if (!isCancelled) {
+            setIsTasksLoading(false);
+          }
+        }
+      };
+
+      loadTasks();
+
+      return () => {
+        isCancelled = true;
+      };
+    }, [selectedDate, user]),
+  );
 
   if (isLoading) {
     return (
