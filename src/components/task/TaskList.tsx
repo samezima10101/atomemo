@@ -1,48 +1,36 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
+import type { Task } from "@/src/types/task";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TaskItem from "./TaskItem";
 
-export type Task = {
-  id: string;
-  title: string;
-  subtasks?: string;
-  completed?: boolean;
-};
-
 type TaskListProps = {
   tasks: Task[];
+  selectedDate: string;
 };
 
-export default function TaskList({ tasks: initialTasks }: TaskListProps) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-
-  const handleToggle = (id: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
-      ),
-    );
-  };
-
+export default function TaskList({ tasks, selectedDate }: TaskListProps) {
   return (
     <View style={styles.container}>
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
           title={task.title}
-          subtasks={task.subtasks}
-          completed={task.completed}
-          onToggle={() => handleToggle(task.id)}
+          subtasks={task.description ?? undefined}
+          completed={task.is_completed}
         />
       ))}
 
       <View style={styles.addRow}>
         <TouchableOpacity
           style={styles.addLeftColumn}
-          onPress={() => router.push("/tasks/edit")}
-          activeOpacity={0.7}
+          onPress={() =>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            })
+          }
         >
           {/* 黒の○の中に＋が入ったSVGアイコン */}
           <AppIcon name="icons8_plus" size={32} />

@@ -1,5 +1,12 @@
-import { AppIcon } from "@/src/components/common/AppIcon";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors } from "@/src/constants/theme";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export type TaskItemProps = {
   title: string;
@@ -32,14 +39,56 @@ export default function TaskItem({
         </View>
       </View>
 
-      {/* 右列：タイトル・サブタスク */}
-      <View style={styles.content}>
-        <Text style={[styles.title, completed && styles.completedTitle]}>
-          {title}
-        </Text>
+      {/* 右側のタスク内容部分 */}
+      <View style={styles.rightColumn}>
+        <View style={styles.titleRow}>
+          <Text style={[styles.title, isCompleted && styles.completedTitle]}>
+            {title}
+          </Text>
+        </View>
 
-        {subtasks && subtasks.trim().length > 0 && (
-          <Text style={styles.subtasks}>{subtasks}</Text>
+        {subtasks && <Text style={styles.subtasks}>{subtasks}</Text>}
+
+        {isCompleted && isCommentInputVisible && (
+          <View style={styles.commentRow}>
+            <View
+              style={[
+                styles.commentInputBox,
+                { height: Math.max(54, commentInputHeight + 6) },
+              ]}
+            >
+              <TextInput
+                value={comment}
+                onChangeText={handleCommentChange}
+                placeholder="コメントを入力"
+                placeholderTextColor={Colors.gray}
+                style={[styles.commentInput, { height: commentInputHeight }]}
+                autoFocus
+                multiline
+                returnKeyType="done"
+                onSubmitEditing={saveComment}
+              />
+              <TouchableOpacity
+                accessibilityLabel="コメントを確定"
+                onPress={saveComment}
+                style={styles.commentButton}
+              >
+                <View style={styles.commentButtonInner}>
+                  <MaterialIcons
+                    name="check"
+                    size={38}
+                    color={Colors.themeMain}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {isCompleted && !isCommentInputVisible && savedComment && (
+          <View style={styles.savedCommentBox}>
+            <Text style={styles.savedComment}>{savedComment}</Text>
+          </View>
         )}
       </View>
     </View>
@@ -58,9 +107,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "stretch",
   },
-  checkButton: {
-    alignItems: "center",
-    justifyContent: "center",
+  verticalLine: {
+    width: 3,
+    backgroundColor: Colors.themeMain,
+    flexGrow: 1,
+    marginTop: 8,
+    marginBottom: 8,
   },
   lineWrapper: {
     flex: 1,
@@ -89,9 +141,73 @@ const styles = StyleSheet.create({
     color: "#94a3b8",
   },
   subtasks: {
-    fontSize: 16,
-    color: "#64748b",
-    marginTop: 6,
-    lineHeight: 22,
+    marginTop: 16,
+    fontSize: 20,
+    lineHeight: 30,
+  },
+  commentRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 18,
+  },
+  commentInputBox: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    borderWidth: 2,
+    borderColor: Colors.themeMain,
+    borderRadius: 7,
+    backgroundColor: Colors.white,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  commentInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 18,
+    lineHeight: 24,
+    color: Colors.black,
+    textAlignVertical: "top",
+  },
+  commentButton: {
+    alignSelf: "flex-start",
+    width: 60,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginVertical: 3,
+    marginRight: 4,
+    backgroundColor: Colors.white,
+    borderRadius: 26,
+  },
+  commentButtonInner: {
+    width: 42,
+    height: 42,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.themeLight,
+    borderRadius: 5,
+  },
+  savedCommentBox: {
+    marginTop: 18,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    minHeight: 54,
+    justifyContent: "center",
+    backgroundColor: Colors.themeLight,
+    borderRadius: 7,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  savedComment: {
+    fontSize: 18,
+    lineHeight: 24,
+    color: Colors.black,
   },
 });

@@ -1,4 +1,5 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
+import { Colors } from "@/src/constants/theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import {
@@ -26,6 +27,14 @@ type TaskFormProps = {
   }) => void;
 };
 
+const formatDateForDatabase = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+const parseDatabaseDate = (date: string) => {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
 export const TaskForm = ({
   initialTitle = "",
   initialDescription = "",
@@ -46,11 +55,11 @@ export const TaskForm = ({
   };
 
   const handleDateChange = (_event: unknown, selectedDate?: Date) => {
-    if (selectedDate) setTargetDate(selectedDate.toISOString());
+    if (selectedDate) setTargetDate(formatDateForDatabase(selectedDate));
     if (Platform.OS !== "ios") setIsDatePickerVisible(false);
   };
 
-  const selectedDate = new Date(targetDate);
+  const selectedDate = parseDatabaseDate(targetDate);
   const formattedTargetDate = `${selectedDate.getMonth() + 1}月${selectedDate.getDate()}日`;
 
   return (
@@ -63,8 +72,8 @@ export const TaskForm = ({
           value={title}
           onChangeText={setTitle}
           caretHidden={false}
-          selectionColor="#2563eb"
-          cursorColor="#2563eb"
+          selectionColor={Colors.themeDark}
+          cursorColor={Colors.themeDark}
           style={styles.titleInput}
         />
       </View>
@@ -98,8 +107,8 @@ export const TaskForm = ({
               multiline
               submitBehavior="newline"
               caretHidden={false}
-              selectionColor="#2563eb"
-              cursorColor="#2563eb"
+              selectionColor={Colors.themeDark}
+              cursorColor={Colors.themeDark}
               inputAccessoryViewID={
                 Platform.OS === "ios" ? descriptionInputAccessoryId : undefined
               }
@@ -132,6 +141,8 @@ export const TaskForm = ({
               display={Platform.OS === "ios" ? "inline" : "calendar"}
               locale="ja-JP"
               onChange={handleDateChange}
+              themeVariant="light"
+              textColor="black"
             />
           </View>
         </View>
@@ -174,14 +185,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     gap: 16,
   },
+  blueCircleIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 3,
+    borderColor: Colors.themeMain,
+  },
   titleInput: {
     flex: 1,
     fontSize: 22,
     fontWeight: "600",
-    color: "#0f172a", // ユーザーが入力した文字は濃く表示
+    color: Colors.black, // ユーザーが入力した文字は濃く表示
   },
   detailCard: {
-    backgroundColor: "#f8fafc",
+    backgroundColor: Colors.grayLight,
     borderRadius: 16,
     padding: 16,
     gap: 16,
@@ -202,7 +220,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   dateBadge: {
-    backgroundColor: "#e2e8f0",
+    backgroundColor: Colors.grayMidLight,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -210,20 +228,20 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#3b82f6",
+    color: Colors.themeMain,
   },
   dateModalBackdrop: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(15, 23, 42, 0.35)",
+    backgroundColor: Colors.slateBackdrop,
     padding: 20,
   },
   dateModalCard: {
     width: "100%",
     maxWidth: 360,
     borderRadius: 16,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     padding: 16,
   },
   dateModalHeader: {
@@ -235,7 +253,7 @@ const styles = StyleSheet.create({
   dateModalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#0f172a",
+    color: Colors.black,
   },
   dateModalCloseButton: {
     paddingHorizontal: 8,
@@ -244,11 +262,11 @@ const styles = StyleSheet.create({
   dateModalCloseText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#2563eb",
+    color: Colors.themeDark,
   },
   contentBox: {
     flex: 1,
-    backgroundColor: "#e2e8f0",
+    backgroundColor: Colors.grayMidLight,
     borderRadius: 12,
     padding: 16,
     minHeight: 120,
@@ -256,14 +274,14 @@ const styles = StyleSheet.create({
   contentInput: {
     flex: 1,
     fontSize: 18,
-    color: "#0f172a", // ユーザーが入力した文字は濃く表示
+    color: Colors.black, // ユーザーが入力した文字は濃く表示
     textAlignVertical: "top", // Androidでテキストが中央揃えになるのを防ぐ
   },
   keyboardToolbar: {
     alignItems: "flex-end",
-    backgroundColor: "#f8fafc",
+    backgroundColor: Colors.grayLight,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#cbd5e1",
+    borderTopColor: Colors.gray,
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
@@ -272,7 +290,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   keyboardDismissText: {
-    color: "#2563eb",
+    color: Colors.themeDark,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -282,7 +300,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   doneButton: {
-    backgroundColor: "#dbeafe",
+    backgroundColor: Colors.themeLight,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 999,
@@ -290,6 +308,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     fontSize: 22,
     fontWeight: "500",
-    color: "#3b82f6",
+    color: Colors.themeMain,
   },
 });

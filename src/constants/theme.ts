@@ -1,25 +1,29 @@
 import { Platform } from "react-native";
 
-const blue = "#0994FF";
-const blueDark = "#2A65BE";
-const blueLight = "#D7EAF6";
+const themeMain = "#0994FF";
+const themeDark = "#2A65BE";
+const themeLight = "#D7EAF6";
 const white = "#FFFFFF";
-const gray = "#D9D9D9";
-const grayLight = "#e5e7eb";
+const grayLight = "#f8fafc";
+const grayMidLight = "#e2e8f0";
+const gray = "#cbd5e1";
 const grayDark = "#4B5563";
 const red = "#FF0909";
-const black = "#000000";
+const black = "#0f172a";
+const slateBackdrop = "#0F172A59";
 
 export const Colors = {
-  blue: blue,
-  blueDark: blueDark,
-  blueLight: blueLight,
+  themeMain: themeMain,
+  themeDark: themeDark,
+  themeLight: themeLight,
   white: white,
-  gray: gray,
   grayLight: grayLight,
+  grayMidLight: grayMidLight,
+  gray: gray,
   grayDark: grayDark,
   red: red,
   black: black,
+  slateBackdrop: slateBackdrop,
 };
 
 export const Fonts = Platform.select({

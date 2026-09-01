@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
 
   tabBarShadow: {
     borderRadius: 33,
-    backgroundColor: Colors.blueLight,
+    backgroundColor: Colors.themeLight,
     shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   tabBar: {
     height: 66,
     flexDirection: "row",
-    backgroundColor: Colors.blueLight,
+    backgroundColor: Colors.themeLight,
     borderRadius: 33,
     overflow: "hidden",
   },

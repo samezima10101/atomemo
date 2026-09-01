@@ -1,28 +1,21 @@
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
 import { AppIcon } from "@/src/components/common/AppIcon";
-import TaskList, { type Task } from "@/src/components/task/TaskList";
+import TaskList from "@/src/components/task/TaskList";
+import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
+import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
+import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
-
-const tasks: Task[] = [
-  {
-    id: "dog-walk",
-    title: "犬の散歩",
-  },
-  {
-    id: "development",
-    title: "開発",
-    subtasks: "・イラストレーターさん委託\n・デザイナー資料\n・要件定義書作成",
-  },
-];
 
 const getInitialDate = () => {
   const weekDays = getWeekDays();
@@ -31,19 +24,71 @@ const getInitialDate = () => {
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
-  const { user, isLoading, signInDev } = useAuth();
 
+  const { user, isLoading, signInAnonymously } = useAuth();
+
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isTasksLoading, setIsTasksLoading] = useState(false);
+  const [taskError, setTaskError] = useState<string | null>(null);
+
+  {
+    /*匿名ログイン処理 */
+  }
   useEffect(() => {
-    // 起動時に未ログインであれば開発用ログインを実行
     if (!isLoading && !user) {
-      signInDev();
+      signInAnonymously();
     }
-  }, [isLoading, user]);
+  }, [isLoading, signInAnonymously, user]);
+
+  {
+    /*画面がフォーカスされるたびにレンダリングする */
+  }
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) {
+        setTasks([]);
+        return;
+      }
+
+      let isCancelled = false;
+
+      const loadTasks = async () => {
+        setIsTasksLoading(true);
+        setTaskError(null);
+
+        try {
+          const data = await getTasksByDate(user.id, selectedDate);
+
+          if (!isCancelled) {
+            setTasks(data);
+          }
+        } catch (error) {
+          if (!isCancelled) {
+            setTaskError(
+              error instanceof Error
+                ? error.message
+                : "タスクの取得に失敗しました。",
+            );
+          }
+        } finally {
+          if (!isCancelled) {
+            setIsTasksLoading(false);
+          }
+        }
+      };
+
+      loadTasks();
+
+      return () => {
+        isCancelled = true;
+      };
+    }, [selectedDate, user]),
+  );
 
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#3b82f6" />
+        <ActivityIndicator size="large" color={Colors.themeMain} />
       </View>
     );
   }
@@ -54,14 +99,21 @@ export default function HomeScreen() {
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
       />
-
-      <TaskList tasks={tasks} />
-
-      {/* 右下FAB：薄い青の背景＋青い＋アイコン */}
+      {isTasksLoading ? (
+        <ActivityIndicator size="small" color={Colors.themeMain} />
+      ) : taskError ? (
+        <Text style={styles.errorText}>{taskError}</Text>
+      ) : (
+        <TaskList tasks={tasks} selectedDate={selectedDate} />
+      )}
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push("/tasks/edit")}
-        activeOpacity={0.8}
+        onPress={() =>
+          router.push({
+            pathname: "/tasks/edit",
+            params: { targetDate: selectedDate },
+          })
+        }
       >
         <AppIcon name="plus" size={32} />
       </TouchableOpacity>
@@ -77,9 +129,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     padding: 24,
     position: "relative",
+  },
+  errorText: {
+    color: Colors.red,
+    marginTop: 16,
   },
   fab: {
     position: "absolute",
