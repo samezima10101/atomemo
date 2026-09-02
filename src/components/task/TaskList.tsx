@@ -19,14 +19,17 @@ export default function TaskList({ tasks, selectedDate }: TaskListProps) {
           title={task.title}
           subtasks={task.description ?? undefined}
           completed={task.is_completed}
-          onPress={() =>
-            router.push({
-              pathname: "/tasks/edit",
-              params: {
-                taskId: task.id,
-                targetDate: task.target_date,
-              },
-            })
+          onPress={
+            task.is_completed
+              ? undefined
+              : () =>
+                  router.push({
+                    pathname: "/tasks/edit",
+                    params: {
+                      taskId: task.id,
+                      targetDate: task.target_date,
+                    },
+                  })
           }
         />
       ))}

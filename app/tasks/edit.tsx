@@ -35,6 +35,10 @@ export default function EditScreen() {
     description: string;
     target_date: string;
   }) => {
+    if (task?.is_completed) {
+      return;
+    }
+
     if (!user) {
       alert("ユーザー情報が見つかりません。ホーム画面に戻ってください。");
       return;
@@ -120,7 +124,7 @@ export default function EditScreen() {
           )}
 
           {/* フォームコンポーネントの呼び出し */}
-          {(!taskId || task) && (
+          {(!taskId || (task && !task.is_completed)) && (
             <TaskForm
               onSubmit={handleFormSubmit}
               isSubmitting={isSubmitting}

@@ -64,7 +64,11 @@ export default function TaskItem({
       </View>
 
       <View style={styles.rightColumn}>
-        <TouchableOpacity onPress={onPress} disabled={!onPress}>
+        <TouchableOpacity
+          onPress={onPress}
+          disabled={!onPress || isCompleted}
+          accessibilityState={{ disabled: !onPress || isCompleted }}
+        >
           <View style={styles.titleRow}>
             <Text style={[styles.title, isCompleted && styles.completedTitle]}>
               {title}
