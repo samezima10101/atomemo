@@ -1,9 +1,12 @@
 import { TaskForm } from "@/src/components/task/TaskForm";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
+import { getTaskById } from "@/src/features/reflections/services/reflectionService";
 import { useTasks } from "@/src/features/tasks/hooks/useTasks";
+import type { Task } from "@/src/types/task";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -18,11 +21,14 @@ import {
 export default function EditScreen() {
   // [taskId].tsxから遷移してきた場合、URLパラメータからtaskIdを取得
   const { taskId, targetDate } = useLocalSearchParams<{
-    taskId: string;
+    taskId?: string;
     targetDate: string;
   }>();
   const { submitTask, isSubmitting, error } = useTasks();
   const { user } = useAuth();
+  const [task, setTask] = useState<Task | null>(null);
+  const [isTaskLoading, setIsTaskLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const handleFormSubmit = async (formData: {
     title: string;
@@ -45,6 +51,32 @@ export default function EditScreen() {
       taskId,
     );
   };
+
+  useEffect(() => {
+    if (!taskId || !user) {
+      return;
+    }
+
+    const loadTask = async () => {
+      setIsTaskLoading(true);
+      setLoadError(null);
+
+      try {
+        const data = await getTaskById(taskId, user.id);
+        setTask(data);
+      } catch (error) {
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "タスクの取得に失敗しました。",
+        );
+      } finally {
+        setIsTaskLoading(false);
+      }
+    };
+
+    loadTask();
+  }, [taskId, user]);
 
   return (
     <>
@@ -88,12 +120,16 @@ export default function EditScreen() {
           )}
 
           {/* フォームコンポーネントの呼び出し */}
-          <TaskForm
-            onSubmit={handleFormSubmit}
-            isSubmitting={isSubmitting}
-            initialTargetDate={targetDate}
-            // TODO: 編集モード(taskIdがある)の場合は、初期値としてDBから取得したデータをinitialPropsへ渡す処理を追記する
-          />
+          {(!taskId || task) && (
+            <TaskForm
+              onSubmit={handleFormSubmit}
+              isSubmitting={isSubmitting}
+              initialTitle={task?.title ?? ""}
+              initialDescription={task?.description ?? ""}
+              initialTargetDate={task?.target_date ?? targetDate}
+              // TODO: 編集モード(taskIdがある)の場合は、初期値としてDBから取得したデータをinitialPropsへ渡す処理を追記する
+            />
+          )}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </>
