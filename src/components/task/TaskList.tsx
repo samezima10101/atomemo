@@ -46,8 +46,12 @@ export default function TaskList({ tasks, selectedDate }: TaskListProps) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.addRightColumn}
-          onPress={() => router.push("/tasks/edit")}
-          activeOpacity={0.7}
+          onPress={() =>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            })
+          }
         >
           <Text style={styles.addText}>今日のタスクを追加する</Text>
         </TouchableOpacity>
