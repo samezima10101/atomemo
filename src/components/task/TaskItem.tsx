@@ -1,6 +1,7 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { useState } from "react";
+import type { Task } from "@/src/types/task";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   StyleSheet,
@@ -11,37 +12,53 @@ import {
 } from "react-native";
 
 type TaskItemProps = {
-  title: string;
-  subtasks?: string;
-  completed?: boolean;
-  onPress?: () => void;
+  task: Task;
+  onCompletionChange?: (
+    taskId: string,
+    isCompleted: boolean,
+    reflection: string | null,
+  ) => Promise<void>;
 };
 
 export default function TaskItem({
-  title,
-  subtasks,
-  completed,
-  onPress,
+  task,
+  onCompletionChange,
 }: TaskItemProps) {
-  const [isCompleted, setIsCompleted] = useState(completed || false);
-  const [comment, setComment] = useState("");
-  const [savedComment, setSavedComment] = useState("");
-  const [isCommentInputVisible, setIsCommentInputVisible] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(task.is_completed);
+  const [comment, setComment] = useState(task.reflection ?? "");
+  const [savedComment, setSavedComment] = useState(task.reflection ?? "");
+  const [isCommentInputVisible, setIsCommentInputVisible] = useState(
+    task.is_completed && !task.reflection,
+  );
   const [commentInputHeight, setCommentInputHeight] = useState(48);
 
-  const toggleComplete = () => {
+  useEffect(() => {
+    setIsCompleted(task.is_completed);
+    setComment(task.reflection ?? "");
+    setSavedComment(task.reflection ?? "");
+    setIsCommentInputVisible(task.is_completed && !task.reflection);
+  }, [task.is_completed, task.reflection]);
+
+  // アイコンがタップされた時に状態を反転させる関数
+  const toggleComplete = async () => {
+    const nextCompleted = !isCompleted;
     if (!isCompleted) {
       setIsCommentInputVisible(true);
     }
-    setIsCompleted((current) => !current);
+    setIsCompleted(nextCompleted);
+    if (nextCompleted && !onCompletionChange) return;
+
+    await onCompletionChange?.(task.id, nextCompleted, null);
   };
 
-  const saveComment = () => {
+  const saveComment = async () => {
+    const nextComment = comment.trim();
     Keyboard.dismiss();
-    setSavedComment(comment.trim());
+    setSavedComment(nextComment);
     setComment("");
     setCommentInputHeight(48);
     setIsCommentInputVisible(false);
+    await onCompletionChange?.(task.id, true, nextComment || null);
   };
 
   const handleCommentChange = (value: string) => {
@@ -64,19 +81,15 @@ export default function TaskItem({
       </View>
 
       <View style={styles.rightColumn}>
-        <TouchableOpacity
-          onPress={onPress}
-          disabled={!onPress || isCompleted}
-          accessibilityState={{ disabled: !onPress || isCompleted }}
-        >
-          <View style={styles.titleRow}>
-            <Text style={[styles.title, isCompleted && styles.completedTitle]}>
-              {title}
-            </Text>
-          </View>
+        <View style={styles.titleRow}>
+          <Text style={[styles.title, isCompleted && styles.completedTitle]}>
+            {task.title}
+          </Text>
+        </View>
 
-          {subtasks && <Text style={styles.subtasks}>{subtasks}</Text>}
-        </TouchableOpacity>
+        {task.description && (
+          <Text style={styles.subtasks}>{task.description}</Text>
+        )}
 
         {isCompleted && isCommentInputVisible && (
           <View style={styles.commentRow}>

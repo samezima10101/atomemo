@@ -19,20 +19,24 @@ export const getTasksByDate = async (
   return data ?? [];
 };
 
-export const getTaskById = async (
-  id: string,
+export const getTasksWithReflections = async (
   userId: string,
-): Promise<Task> => {
+): Promise<Task[]> => {
   const { data, error } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", id)
     .eq("user_id", userId)
-    .single();
+    .eq("is_completed", true)
+    .not("completed_at", "is", null)
+    .not("reflection", "is", null)
+    .neq("reflection", "")
+    .order("completed_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data as Task;
+  return (data ?? []).filter(
+    (task) => typeof task.reflection === "string" && task.reflection.trim(),
+  );
 };
