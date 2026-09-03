@@ -14,12 +14,14 @@ type TaskItemProps = {
   title: string;
   subtasks?: string;
   completed?: boolean;
+  onPress?: () => void;
 };
 
 export default function TaskItem({
   title,
   subtasks,
   completed,
+  onPress,
 }: TaskItemProps) {
   const [isCompleted, setIsCompleted] = useState(completed || false);
   const [comment, setComment] = useState("");
@@ -27,7 +29,6 @@ export default function TaskItem({
   const [isCommentInputVisible, setIsCommentInputVisible] = useState(true);
   const [commentInputHeight, setCommentInputHeight] = useState(48);
 
-  // アイコンがタップされた時に状態を反転させる関数
   const toggleComplete = () => {
     if (!isCompleted) {
       setIsCommentInputVisible(true);
@@ -51,7 +52,6 @@ export default function TaskItem({
 
   return (
     <View style={styles.container}>
-      {/* 左側のタイムライン */}
       <View style={styles.leftColumn}>
         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
@@ -63,15 +63,20 @@ export default function TaskItem({
         <View style={styles.verticalLine} />
       </View>
 
-      {/* 右側のタスク内容部分 */}
       <View style={styles.rightColumn}>
-        <View style={styles.titleRow}>
-          <Text style={[styles.title, isCompleted && styles.completedTitle]}>
-            {title}
-          </Text>
-        </View>
+        <TouchableOpacity
+          onPress={onPress}
+          disabled={!onPress || isCompleted}
+          accessibilityState={{ disabled: !onPress || isCompleted }}
+        >
+          <View style={styles.titleRow}>
+            <Text style={[styles.title, isCompleted && styles.completedTitle]}>
+              {title}
+            </Text>
+          </View>
 
-        {subtasks && <Text style={styles.subtasks}>{subtasks}</Text>}
+          {subtasks && <Text style={styles.subtasks}>{subtasks}</Text>}
+        </TouchableOpacity>
 
         {isCompleted && isCommentInputVisible && (
           <View style={styles.commentRow}>
