@@ -4,6 +4,7 @@ import TaskList from "@/src/components/task/TaskList";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
+import { updateTaskCompletion } from "@/src/features/tasks/services/reflectionServices";
 import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
 
@@ -30,6 +31,16 @@ export default function HomeScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isTasksLoading, setIsTasksLoading] = useState(false);
   const [taskError, setTaskError] = useState<string | null>(null);
+
+  const handleCompletionChange = async (
+    taskId: string,
+    isCompleted: boolean,
+    reflection: string | null,
+  ) => {
+    await updateTaskCompletion(taskId, isCompleted, reflection);
+    const data = await getTasksByDate(user!.id, selectedDate);
+    setTasks(data);
+  };
 
   {
     /*匿名ログイン処理 */
@@ -104,7 +115,11 @@ export default function HomeScreen() {
       ) : taskError ? (
         <Text style={styles.errorText}>{taskError}</Text>
       ) : (
-        <TaskList tasks={tasks} selectedDate={selectedDate} />
+        <TaskList
+          tasks={tasks}
+          selectedDate={selectedDate}
+          onCompletionChange={handleCompletionChange}
+        />
       )}
       <TouchableOpacity
         style={styles.fab}

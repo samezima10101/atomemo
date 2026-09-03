@@ -29,3 +29,15 @@ export const updateTask = async (
   if (error) throw new Error(error.message);
   return data;
 };
+
+export const updateTaskCompletion = async (
+  id: string,
+  isCompleted: boolean,
+  reflection: string | null = null,
+) => {
+  return updateTask(id, {
+    is_completed: isCompleted,
+    completed_at: isCompleted ? new Date().toISOString() : null,
+    reflection: isCompleted ? reflection : null,
+  });
+};

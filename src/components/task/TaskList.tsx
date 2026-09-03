@@ -8,17 +8,25 @@ import TaskItem from "./TaskItem";
 type TaskListProps = {
   tasks: Task[];
   selectedDate: string;
+  onCompletionChange?: (
+    taskId: string,
+    isCompleted: boolean,
+    reflection: string | null,
+  ) => Promise<void>;
 };
 
-export default function TaskList({ tasks, selectedDate }: TaskListProps) {
+export default function TaskList({
+  tasks,
+  selectedDate,
+  onCompletionChange,
+}: TaskListProps) {
   return (
     <View style={styles.container}>
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
-          title={task.title}
-          subtasks={task.description ?? undefined}
-          completed={task.is_completed}
+          task={task}
+          onCompletionChange={onCompletionChange}
         />
       ))}
 
@@ -37,7 +45,12 @@ export default function TaskList({ tasks, selectedDate }: TaskListProps) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.addRightColumn}
-          onPress={() => router.push("/tasks/edit")}
+          onPress={() =>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            })
+          }
           activeOpacity={0.7}
         >
           <Text style={styles.addText}>今日のタスクを追加する</Text>
