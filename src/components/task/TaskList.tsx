@@ -1,8 +1,13 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import type { Task } from "@/src/types/task";
 import { router } from "expo-router";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import TaskItem from "./TaskItem";
 
 type TaskListProps = {
@@ -21,7 +26,7 @@ export default function TaskList({
   onCompletionChange,
 }: TaskListProps) {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
@@ -56,7 +61,7 @@ export default function TaskList({
           <Text style={styles.addText}>今日のタスクを追加する</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -64,6 +69,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
+    marginRight: -20,
+  },
+  content: {
+    paddingRight: 20,
+    paddingBottom: 100,
   },
   addRow: {
     flexDirection: "row",
