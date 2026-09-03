@@ -69,7 +69,6 @@ export default function TaskItem({
 
   return (
     <View style={styles.container}>
-      {/* 左側のタイムライン */}
       <View style={styles.leftColumn}>
         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
@@ -81,7 +80,6 @@ export default function TaskItem({
         <View style={styles.verticalLine} />
       </View>
 
-      {/* 右側のタスク内容部分 */}
       <View style={styles.rightColumn}>
         <View style={styles.titleRow}>
           <Text style={[styles.title, isCompleted && styles.completedTitle]}>
