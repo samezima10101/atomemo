@@ -1,7 +1,7 @@
 import { TaskForm } from "@/src/components/task/TaskForm";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
-import { getTaskById } from "@/src/features/reflections/services/reflectionService";
+import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
 import { useTasks } from "@/src/features/tasks/hooks/useTasks";
 import type { Task } from "@/src/types/task";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -66,8 +66,8 @@ export default function EditScreen() {
       setLoadError(null);
 
       try {
-        const data = await getTaskById(taskId, user.id);
-        setTask(data);
+        const data = await getTasksByDate(targetDate, user.id);
+        setTask(data[0]); // 最初のタスクを設定
       } catch (error) {
         setLoadError(
           error instanceof Error
