@@ -1,7 +1,7 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
+import type { ComponentProps } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -13,7 +13,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-function SlidingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+type SlidingTabBarProps = Parameters<
+  NonNullable<ComponentProps<typeof Tabs>["tabBar"]>
+>[0];
+
+function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
   const [tabBarWidth, setTabBarWidth] = useState(0);
   const insets = useSafeAreaInsets();
 
