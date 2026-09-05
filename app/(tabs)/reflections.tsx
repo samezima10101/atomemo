@@ -25,7 +25,7 @@ export default function HomeScreen() {
   if (isAuthLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color={Colors.themeMain} />
+        <ActivityIndicator size="large" color={Colors.themePink} />
       </View>
     );
   }
@@ -36,9 +36,9 @@ export default function HomeScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>振り返り</Text>
+        <Text style={styles.title}>　振り返り</Text>
         {isLoading ? (
-          <ActivityIndicator size="small" color={Colors.themeMain} />
+          <ActivityIndicator size="small" color={Colors.themePink} />
         ) : error ? (
           <Text style={styles.errorText}>{error}</Text>
         ) : (
@@ -68,10 +68,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 32,
     fontWeight: "700",
-    color: Colors.black,
-    marginBottom: 15,
-    marginTop: 30,
-
+    color: Colors.themeGreenDark,
+    paddingBottom: 15,
+    paddingTop: 30,
+    backgroundColor: Colors.themeGreenLight,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.themeGreenDark,
   },
   errorText: {
     marginTop: 16,

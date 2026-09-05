@@ -4,14 +4,14 @@ import { updateTask } from "@/src/features/tasks/services/reflectionServices";
 import type { Task } from "@/src/types/task";
 import { useRef, useState } from "react";
 import {
-    Alert,
-    Keyboard,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function ReflectionItem({ task }: { task: Task }) {
@@ -55,7 +55,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
   return (
     <View style={styles.container}>
       <View style={styles.checkColumn}>
-        <AppIcon name="check" size={30} style={{ tintColor: Colors.black }}/>
+        <AppIcon name="check" size={30} style={{ tintColor: Colors.themePink }} />
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{task.title}</Text>
@@ -82,7 +82,11 @@ export default function ReflectionItem({ task }: { task: Task }) {
               style={styles.commentButton}
             >
               <View style={styles.commentButtonInner}>
-                <AppIcon name="check" size={38} style={{ tintColor: Colors.black }}/>
+                <AppIcon
+                  name="check"
+                  size={38}
+                  style={{ tintColor: Colors.themePinkDark }}
+                />
               </View>
             </TouchableOpacity>
           </View>
@@ -100,14 +104,16 @@ const styles = StyleSheet.create({
   container: { flexDirection: "row", minHeight: 112 },
   checkColumn: { width: 40, paddingTop: 5 },
   content: { flex: 1, paddingBottom: 28 },
-  title: { fontSize: 30, lineHeight: 38, color: Colors.black },
+  title: {
+    fontSize: 30, lineHeight: 38, color: Colors.black
+  },
   commentInputBox: {
     flex: 1,
     flexDirection: "row",
     alignItems: "flex-start",
     marginTop: 18,
     borderWidth: 2,
-    borderColor: Colors.themeMain,
+    borderColor: Colors.themePink,
     borderRadius: 7,
     backgroundColor: Colors.white,
     shadowColor: Colors.black,

@@ -1,24 +1,30 @@
 import { Platform } from "react-native";
 
-const themeMain = "#2de38b";
+const themePink = "#f18aac";
+const themePinkDark = "#bc7d85";
+const themeGreen = "#d0f7ea";
+const themeGreenDark = "#4caf8e";
 const themeDark = "#9a9ee4";
-const themeLight = "#ff7d7d";
+const themeLight = "#f5e2e6";
 const white = "#FFFFFF";
 const grayLight = "#970044";
 const grayMidLight = "#ffa4c4";
-const gray = "#ff0505";
-const grayDark = "#5bffce";
+const gray = "#bed4ce";
+const grayDark = "#647d75";
 const grayText = "#00716f";
 const red = "#FF0909";
-const black = "#ff00d9";
+const black = "#000000";
 const lightBlue = "#eaff00";
-const calendarBackdrop = "#DBFFED";
+const themeGreenLight = "#eefff7";
 const shadow = "#000000";
 const transparent = "transparent";
 const slateBackdrop = "#0F172A59";
 
 export const Colors = {
-  themeMain: themeMain,
+  themePink: themePink,
+  themePinkDark: themePinkDark,
+  themeGreen: themeGreen,
+  themeGreenDark: themeGreenDark,
   themeDark: themeDark,
   themeLight: themeLight,
   white: white,
@@ -30,7 +36,7 @@ export const Colors = {
   red: red,
   black: black,
   lightBlue: lightBlue,
-  calendarBackdrop: calendarBackdrop,
+  themeGreenLight: themeGreenLight,
   shadow: shadow,
   transparent: transparent,
   slateBackdrop: slateBackdrop,

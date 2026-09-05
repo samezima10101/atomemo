@@ -47,7 +47,11 @@ export default function TaskList({
           }
         >
           {/* 黒の○の中に＋が入ったSVGアイコン */}
-          <AppIcon name="icons8_plus" size={32} style={{ tintColor: Colors.themeMain }} />
+          <AppIcon
+            name="icons8_plus"
+            size={32}
+            style={{ tintColor: Colors.black }}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.addRightColumn}

@@ -64,6 +64,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 20,
-    backgroundColor: Colors.calendarBackdrop,
+    backgroundColor: Colors.themeGreenLight,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.themeGreenDark,
   },
 });
