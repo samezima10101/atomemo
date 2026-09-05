@@ -66,12 +66,13 @@ export const TaskForm = ({
     <>
       {/* タイトルエリア */}
       <View style={styles.titleSection}>
-        <AppIcon name="circle" size={28} />
+        <AppIcon name="circle" size={28} style={{ tintColor: Colors.black }}/>
         <TextInput
           placeholder="タイトルを入力"
           value={title}
           onChangeText={setTitle}
           caretHidden={false}
+          placeholderTextColor={Colors.gray}
           selectionColor={Colors.themeDark}
           cursorColor={Colors.themeDark}
           style={styles.titleInput}
@@ -83,7 +84,7 @@ export const TaskForm = ({
         {/* 日付表示行 */}
         <View style={styles.detailRow}>
           <View style={styles.iconColumn}>
-            <AppIcon name="calendar" size={28} />
+            <AppIcon name="calendar" size={28} style={{ tintColor: Colors.black }}/>
           </View>
           {/* 日付をタップするとピッカーを表示 */}
           <TouchableOpacity
@@ -97,7 +98,7 @@ export const TaskForm = ({
         {/* 内容入力行 */}
         <View style={styles.detailRowTop}>
           <View style={styles.iconColumn}>
-            <AppIcon name="note" size={24} />
+            <AppIcon name="note" size={24} style={{ tintColor: Colors.black }}/>
           </View>
           <View style={styles.contentBox}>
             <TextInput
@@ -107,6 +108,7 @@ export const TaskForm = ({
               multiline
               submitBehavior="newline"
               caretHidden={false}
+              placeholderTextColor={Colors.gray}
               selectionColor={Colors.themeDark}
               cursorColor={Colors.themeDark}
               inputAccessoryViewID={
@@ -142,7 +144,7 @@ export const TaskForm = ({
               locale="ja-JP"
               onChange={handleDateChange}
               themeVariant="light"
-              textColor="black"
+              textColor={Colors.black}
             />
           </View>
         </View>

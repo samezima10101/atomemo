@@ -28,16 +28,16 @@ export default function DateItem({
         style={[
           styles.today,
           {
-            backgroundColor: highlighted ? Colors.grayLight : "transparent",
+            backgroundColor: highlighted ? Colors.grayLight : Colors.transparent,
           },
         ]}
       >
-        <Text style={{ fontSize: 20, textAlign: "center" }}>{content}</Text>
-        <Text style={{ fontSize: 20, textAlign: "center" }}>{date}</Text>
+        <Text style={styles.dateText}>{content}</Text>
+        <Text style={styles.dateText}>{date}</Text>
         <View
           style={[
             styles.underline,
-            { backgroundColor: selected ? Colors.themeMain : "transparent" },
+            { backgroundColor: selected ? Colors.themeMain : Colors.transparent },
           ]}
         />
       </View>
@@ -60,6 +60,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 4,
     minWidth: 52,
+  },
+  dateText: {
+    fontSize: 20,
+    textAlign: "center",
+    color: Colors.black,
   },
   underline: {
     marginTop: 6,

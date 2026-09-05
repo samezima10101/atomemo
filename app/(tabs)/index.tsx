@@ -130,7 +130,7 @@ export default function HomeScreen() {
           })
         }
       >
-        <AppIcon name="plus" size={32} />
+        <AppIcon name="plus" size={32} style={{ tintColor: Colors.themeDark }}/>
       </TouchableOpacity>
     </View>
   );
@@ -159,10 +159,10 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#dbeafe", // Figma通りの水色・薄青背景
+    backgroundColor: Colors.lightBlue,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 6,

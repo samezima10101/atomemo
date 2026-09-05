@@ -55,7 +55,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
   return (
     <View style={styles.container}>
       <View style={styles.checkColumn}>
-        <AppIcon name="check" size={30} />
+        <AppIcon name="check" size={30} style={{ tintColor: Colors.black }}/>
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{task.title}</Text>
@@ -82,7 +82,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
               style={styles.commentButton}
             >
               <View style={styles.commentButtonInner}>
-                <AppIcon name="check" size={38} />
+                <AppIcon name="check" size={38} style={{ tintColor: Colors.black }}/>
               </View>
             </TouchableOpacity>
           </View>
