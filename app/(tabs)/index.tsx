@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
   },
   dateTitleText: {
     fontSize: 26,
+    color: Colors.black,
   },
   errorText: {
     color: Colors.red,
