@@ -30,7 +30,7 @@ export default function TaskList({
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {tasks.map((task) => (
         <TaskItem
-          key={`${task.id}-${task.is_completed}-${task.reflection ?? ""}`}
+          key={task.id}
           task={task}
           onCompletionChange={onCompletionChange}
         />
