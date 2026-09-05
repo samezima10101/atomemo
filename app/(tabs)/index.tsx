@@ -24,6 +24,13 @@ const getInitialDate = () => {
 };
 
 export default function HomeScreen() {
+  const formatDateTitle = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+    return `${month}月${day}日(${dayOfWeek})`;
+  };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
   const { user, isLoading, signInAnonymously } = useAuth();
@@ -110,6 +117,12 @@ export default function HomeScreen() {
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
       />
+      <View style={styles.dateTitle}>
+        <Text style={styles.dateTitleText}>
+          {formatDateTitle(selectedDate)}
+        </Text>
+      </View>
+
       {isTasksLoading ? (
         <ActivityIndicator size="small" color={Colors.themeMain} />
       ) : taskError ? (
@@ -148,9 +161,16 @@ const styles = StyleSheet.create({
     padding: 24,
     position: "relative",
   },
+  dateTitle: {
+    marginTop: 5,
+  },
+  dateTitleText: {
+    fontSize: 26,
+  },
   errorText: {
     color: Colors.red,
     marginTop: 16,
+    marginBottom: 16,
   },
   fab: {
     position: "absolute",

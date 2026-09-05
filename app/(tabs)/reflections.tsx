@@ -69,7 +69,9 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     fontWeight: "700",
     color: Colors.black,
-    marginBottom: 24,
+    marginBottom: 15,
+    marginTop: 30,
+
   },
   errorText: {
     marginTop: 16,

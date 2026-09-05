@@ -102,7 +102,7 @@ export default function TaskItem({
               <TextInput
                 value={comment}
                 onChangeText={handleCommentChange}
-                placeholder="コメントを入力"
+                placeholder="振り返りを入力"
                 placeholderTextColor={Colors.gray}
                 style={[styles.commentInput, { height: commentInputHeight }]}
                 autoFocus
@@ -111,7 +111,7 @@ export default function TaskItem({
                 onSubmitEditing={saveComment}
               />
               <TouchableOpacity
-                accessibilityLabel="コメントを確定"
+                accessibilityLabel="振り返りを確定"
                 onPress={saveComment}
                 style={styles.commentButton }
               >
