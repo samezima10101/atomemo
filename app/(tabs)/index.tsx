@@ -119,23 +119,24 @@ export default function HomeScreen() {
         onSelectDate={setSelectedDate}
       />
       <ScrollView>
-      <View style={styles.dateTitle}>
-        <Text style={styles.dateTitleText}>
-          {formatDateTitle(selectedDate)}
-        </Text>
-      </View>
+        <View style={styles.dateTitle}>
+          <Text style={styles.dateTitleText}>
+            {formatDateTitle(selectedDate)}
+          </Text>
+        </View>
 
-      {isTasksLoading ? (
-        <ActivityIndicator size="small" color={Colors.themePink} />
-      ) : taskError ? (
-        <Text style={styles.errorText}>{taskError}</Text>
-      ) : (
-        <TaskList
-          tasks={tasks}
-          selectedDate={selectedDate}
-          onCompletionChange={handleCompletionChange}
-        />
-      )}
+        {isTasksLoading ? (
+          <ActivityIndicator size="small" color={Colors.themePink} />
+        ) : taskError ? (
+          <Text style={styles.errorText}>{taskError}</Text>
+        ) : (
+          <TaskList
+            tasks={tasks}
+            selectedDate={selectedDate}
+            onCompletionChange={handleCompletionChange}
+          />
+        )}
+      </ScrollView>
       <TouchableOpacity
         style={styles.fab}
         onPress={() =>
@@ -150,8 +151,7 @@ export default function HomeScreen() {
           size={32}
           style={{ tintColor: Colors.themePink }}
         />
-        </TouchableOpacity>
-      </ScrollView>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -69,11 +69,7 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
       <View style={styles.leftColumn}>
         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
-            <AppIcon
-              name="check"
-              size={32}
-              style={{ tintColor: Colors.themePink }}
-            />
+            <AppIcon name="check" size={35} style={styles.checkIcon} />
           ) : (
             <View style={styles.uncheckCircle} />
           )}
@@ -119,7 +115,7 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
                 <View style={styles.commentButtonInner}>
                   <AppIcon
                     name="check"
-                    size={38}
+                    size={32}
                     style={{ tintColor: Colors.themePink }}
                   />
                 </View>
@@ -147,16 +143,23 @@ const styles = StyleSheet.create({
     width: 60,
     alignItems: "flex-start",
   },
+  checkIcon: {
+    tintColor: Colors.themePink,
+    marginLeft: -2,
+  },
   uncheckCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    margin: 5,
+    marginLeft: 3,
     borderWidth: 2,
     borderColor: Colors.themePink,
   },
   verticalLine: {
     width: 3,
     backgroundColor: Colors.themePink,
+    marginLeft: 14,
     flexGrow: 1,
     marginTop: 8,
     marginBottom: 8,
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: "bold",
     color: Colors.black,
   },

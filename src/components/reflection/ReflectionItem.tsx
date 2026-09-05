@@ -55,7 +55,11 @@ export default function ReflectionItem({ task }: { task: Task }) {
   return (
     <View style={styles.container}>
       <View style={styles.checkColumn}>
-        <AppIcon name="check" size={30} style={{ tintColor: Colors.themePink }} />
+        <AppIcon
+          name="check"
+          size={35}
+          style={{ tintColor: Colors.themePink }}
+        />
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{task.title}</Text>
@@ -84,7 +88,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
               <View style={styles.commentButtonInner}>
                 <AppIcon
                   name="check"
-                  size={38}
+                  size={32}
                   style={{ tintColor: Colors.themePinkDark }}
                 />
               </View>
@@ -105,7 +109,9 @@ const styles = StyleSheet.create({
   checkColumn: { width: 40, paddingTop: 5 },
   content: { flex: 1, paddingBottom: 28 },
   title: {
-    fontSize: 30, lineHeight: 38, color: Colors.black
+    fontSize: 30,
+    lineHeight: 38,
+    color: Colors.black,
   },
   commentInputBox: {
     flex: 1,
