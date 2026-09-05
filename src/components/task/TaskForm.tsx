@@ -66,7 +66,11 @@ export const TaskForm = ({
     <>
       {/* タイトルエリア */}
       <View style={styles.titleSection}>
-        <AppIcon name="circle" size={28} style={{ tintColor: Colors.themePink }} />
+        <AppIcon
+          name="circle"
+          size={28}
+          style={{ tintColor: Colors.themePink }}
+        />
         <TextInput
           placeholder="タイトルを入力"
           value={title}
