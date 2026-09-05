@@ -1,7 +1,8 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
 import type { Task } from "@/src/types/task";
-import { useEffect, useState } from "react";
+import { router } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   StyleSheet,
@@ -21,26 +22,29 @@ type TaskItemProps = {
 };
 
 export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
+  const commentInputRef = useRef<TextInput>(null);
+  const shouldFocusCommentRef = useRef(false);
   const [isCompleted, setIsCompleted] = useState(task.is_completed);
   const [comment, setComment] = useState(task.reflection ?? "");
   const [savedComment, setSavedComment] = useState(task.reflection ?? "");
-  const [isCommentInputVisible, setIsCommentInputVisible] = useState(
-    task.is_completed && !task.reflection,
-  );
+  const [isCommentInputVisible, setIsCommentInputVisible] = useState(false);
   const [commentInputHeight, setCommentInputHeight] = useState(48);
 
   useEffect(() => {
-    setIsCompleted(task.is_completed);
-    setComment(task.reflection ?? "");
-    setSavedComment(task.reflection ?? "");
-    setIsCommentInputVisible(task.is_completed && !task.reflection);
-  }, [task.is_completed, task.reflection]);
+    if (isCommentInputVisible && shouldFocusCommentRef.current) {
+      shouldFocusCommentRef.current = false;
+      commentInputRef.current?.focus();
+    }
+  }, [isCommentInputVisible]);
 
   // アイコンがタップされた時に状態を反転させる関数
   const toggleComplete = async () => {
     const nextCompleted = !isCompleted;
     if (!isCompleted) {
+      shouldFocusCommentRef.current = true;
       setIsCommentInputVisible(true);
+    } else {
+      setIsCommentInputVisible(false);
     }
     setIsCompleted(nextCompleted);
     if (nextCompleted && !onCompletionChange) return;
@@ -83,9 +87,18 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
 
       <View style={styles.rightColumn}>
         <View style={styles.titleRow}>
-          <Text style={[styles.title, isCompleted && styles.completedTitle]}>
-            {task.title}
-          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/tasks/edit",
+                params: { taskId: task.id, targetDate: task.target_date },
+              })
+            }
+          >
+            <Text style={[styles.title, isCompleted && styles.completedTitle]}>
+              {task.title}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {task.description && (
@@ -101,12 +114,12 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
               ]}
             >
               <TextInput
+                ref={commentInputRef}
                 value={comment}
                 onChangeText={handleCommentChange}
                 placeholder="振り返りを入力"
                 placeholderTextColor={Colors.gray}
                 style={[styles.commentInput, { height: commentInputHeight }]}
-                autoFocus
                 multiline
                 returnKeyType="done"
                 onSubmitEditing={saveComment}

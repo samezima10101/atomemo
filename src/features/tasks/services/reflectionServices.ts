@@ -30,6 +30,12 @@ export const updateTask = async (
   return data;
 };
 
+export const deleteTask = async (id: string) => {
+  const { error } = await supabase.from("tasks").delete().eq("id", id);
+
+  if (error) throw new Error(error.message);
+};
+
 export const updateTaskCompletion = async (
   id: string,
   isCompleted: boolean,

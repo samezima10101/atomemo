@@ -19,6 +19,20 @@ export const getTasksByDate = async (
   return data ?? [];
 };
 
+export const getTaskById = async (taskId: string): Promise<Task> => {
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("id", taskId)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
 export const getTasksWithReflections = async (
   userId: string,
 ): Promise<Task[]> => {
