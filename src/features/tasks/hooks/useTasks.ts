@@ -1,7 +1,11 @@
 import { Task } from "@/src/types/task";
 import { router } from "expo-router";
 import { useState } from "react";
-import { insertTask, updateTask } from "../services/reflectionServices";
+import {
+  deleteTask as removeTask,
+  insertTask,
+  updateTask,
+} from "../services/reflectionServices";
 
 export const useTasks = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,5 +35,19 @@ export const useTasks = () => {
     }
   };
 
-  return { submitTask, isSubmitting, error };
+  const deleteTask = async (taskId: string) => {
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await removeTask(taskId);
+      router.back();
+    } catch (err: any) {
+      setError(err.message || "タスクの削除に失敗しました");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return { submitTask, deleteTask, isSubmitting, error };
 };

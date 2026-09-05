@@ -1,13 +1,14 @@
 import { TaskForm } from "@/src/components/task/TaskForm";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
-import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
+import { getTaskById } from "@/src/features/reflections/services/reflectionService";
 import { useTasks } from "@/src/features/tasks/hooks/useTasks";
 import type { Task } from "@/src/types/task";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -24,7 +25,7 @@ export default function EditScreen() {
     taskId?: string;
     targetDate: string;
   }>();
-  const { submitTask, isSubmitting, error } = useTasks();
+  const { submitTask, deleteTask, isSubmitting, error } = useTasks();
   const { user } = useAuth();
   const [task, setTask] = useState<Task | null>(null);
   const [isTaskLoading, setIsTaskLoading] = useState(false);
@@ -35,10 +36,6 @@ export default function EditScreen() {
     description: string;
     target_date: string;
   }) => {
-    if (task?.is_completed) {
-      return;
-    }
-
     if (!user) {
       alert("ユーザー情報が見つかりません。ホーム画面に戻ってください。");
       return;
@@ -50,7 +47,7 @@ export default function EditScreen() {
         title: formData.title,
         description: formData.description || null,
         target_date: formData.target_date,
-        is_completed: false,
+        is_completed: task?.is_completed ?? false,
       },
       taskId,
     );
@@ -66,8 +63,8 @@ export default function EditScreen() {
       setLoadError(null);
 
       try {
-        const data = await getTasksByDate(targetDate, user.id);
-        setTask(data[0]); // 最初のタスクを設定
+        const data = await getTaskById(taskId);
+        setTask(data);
       } catch (error) {
         setLoadError(
           error instanceof Error
@@ -80,7 +77,20 @@ export default function EditScreen() {
     };
 
     loadTask();
-  }, [taskId, user]);
+  }, [taskId, targetDate, user]);
+
+  const handleDelete = () => {
+    if (!taskId || isSubmitting) return;
+
+    Alert.alert("タスクを削除", "このタスクを削除しますか？", [
+      { text: "キャンセル", style: "cancel" },
+      {
+        text: "削除",
+        style: "destructive",
+        onPress: () => deleteTask(taskId),
+      },
+    ]);
+  };
 
   return (
     <>
@@ -106,7 +116,12 @@ export default function EditScreen() {
 
             {/* 既存タスクの編集時のみ削除ボタンを表示する制御 */}
             {taskId && (
-              <TouchableOpacity style={styles.deleteButton}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={handleDelete}
+                disabled={isSubmitting}
+                accessibilityLabel="タスクを削除"
+              >
                 <MaterialCommunityIcons
                   name="trash-can-outline"
                   size={26}
@@ -124,14 +139,13 @@ export default function EditScreen() {
           )}
 
           {/* フォームコンポーネントの呼び出し */}
-          {(!taskId || (task && !task.is_completed)) && (
+          {(!taskId || task) && (
             <TaskForm
               onSubmit={handleFormSubmit}
               isSubmitting={isSubmitting}
               initialTitle={task?.title ?? ""}
               initialDescription={task?.description ?? ""}
               initialTargetDate={task?.target_date ?? targetDate}
-              // TODO: 編集モード(taskIdがある)の場合は、初期値としてDBから取得したデータをinitialPropsへ渡す処理を追記する
             />
           )}
         </KeyboardAvoidingView>
