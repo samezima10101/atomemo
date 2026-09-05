@@ -1,3 +1,4 @@
+import { Colors } from "@/src/constants/theme";
 import { addWeeks, getWeekDays } from "@/src/utils/date";
 import { useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
@@ -63,5 +64,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 20,
+    backgroundColor: Colors.calendarBackdrop,
   },
 });

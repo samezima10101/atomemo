@@ -102,9 +102,9 @@ function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
                 style={styles.tabButton}
               >
                 {route.name === "index" ? (
-                  <AppIcon name="tabList" size={30} />
+                  <AppIcon name="tabList" size={30} style={{ tintColor: Colors.black }}/>
                 ) : (
-                  <AppIcon name="tabMemo" size={30} />
+                  <AppIcon name="tabMemo" size={30} style={{ tintColor: Colors.black }}/>
                 )}
 
                 <Text style={styles.tabLabel}>{label}</Text>
@@ -125,7 +125,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarHideOnKeyboard: true,
         sceneStyle: {
-          backgroundColor: "white",
+          backgroundColor: Colors.white,
         },
       }}
     >

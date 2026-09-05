@@ -1,4 +1,5 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
+import { Colors } from "@/src/constants/theme";
 import type { Task } from "@/src/types/task";
 import { router } from "expo-router";
 import {
@@ -46,7 +47,7 @@ export default function TaskList({
           }
         >
           {/* 黒の○の中に＋が入ったSVGアイコン */}
-          <AppIcon name="icons8_plus" size={32} />
+          <AppIcon name="icons8_plus" size={32} style={{ tintColor: Colors.themeMain }} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.addRightColumn}
@@ -92,6 +93,6 @@ const styles = StyleSheet.create({
   addText: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#0f172a",
+    color: Colors.black,
   },
 });

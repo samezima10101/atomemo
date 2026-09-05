@@ -72,7 +72,7 @@ export default function TaskItem({
       <View style={styles.leftColumn}>
         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
-            <AppIcon name="check" size={32} />
+            <AppIcon name="check" size={32} style={{ tintColor: Colors.themeMain }}/>
           ) : (
             <View style={styles.uncheckCircle} />
           )}
@@ -113,10 +113,10 @@ export default function TaskItem({
               <TouchableOpacity
                 accessibilityLabel="振り返りを確定"
                 onPress={saveComment}
-                style={styles.commentButton}
+                style={styles.commentButton }
               >
                 <View style={styles.commentButtonInner}>
-                  <AppIcon name="check" size={38} />
+                  <AppIcon name="check" size={38} style={{ tintColor: Colors.themeMain}} />
                 </View>
               </TouchableOpacity>
             </View>
@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 16,
     borderWidth: 2,
+    borderColor: Colors.themeMain,
   },
   verticalLine: {
     width: 3,
@@ -166,6 +167,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: "bold",
+    color: Colors.black,
   },
   completedTitle: {
     textDecorationLine: "line-through",
@@ -178,6 +180,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 20,
     lineHeight: 30,
+    color: Colors.black,
   },
   commentRow: {
     flexDirection: "row",

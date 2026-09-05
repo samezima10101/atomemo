@@ -1,4 +1,5 @@
 import type { Task } from "@/src/types/task";
+import { Colors } from "@/src/constants/theme";
 import { StyleSheet, Text, View } from "react-native";
 import ReflectionDateGroup from "./ReflectionDateGroup";
 
@@ -33,5 +34,5 @@ export default function ReflectionList({ tasks }: { tasks: Task[] }) {
 }
 
 const styles = StyleSheet.create({
-	empty: { marginTop: 32, fontSize: 18, color: "#64748b" },
+	empty: { marginTop: 32, fontSize: 18, color: Colors.grayText },
 });
