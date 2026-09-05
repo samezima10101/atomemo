@@ -1,3 +1,4 @@
+import { Colors } from "@/src/constants/theme";
 import { Image } from "expo-image";
 import { ImageStyle, StyleProp, StyleSheet } from "react-native";
 
@@ -35,5 +36,6 @@ export function AppIcon({ name, size = 24, style }: AppIconProps) {
 const styles = StyleSheet.create({
   icon: {
     flexShrink: 0,
+    tintColor: Colors.black,
   },
 });

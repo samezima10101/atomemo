@@ -12,6 +12,7 @@ const grayText = "#00716f";
 const red = "#FF0909";
 const black = "#ff00d9";
 const lightBlue = "#eaff00";
+const calendarBackdrop = "#DBFFED";
 const shadow = "#000000";
 const transparent = "transparent";
 const slateBackdrop = "#0F172A59";
@@ -29,6 +30,7 @@ export const Colors = {
   red: red,
   black: black,
   lightBlue: lightBlue,
+  calendarBackdrop: calendarBackdrop,
   shadow: shadow,
   transparent: transparent,
   slateBackdrop: slateBackdrop,

@@ -143,7 +143,11 @@ export default function HomeScreen() {
           })
         }
       >
-        <AppIcon name="plus" size={32} style={{ tintColor: Colors.themeDark }}/>
+        <AppIcon
+          name="plus"
+          size={32}
+          style={{ tintColor: Colors.themeDark }}
+        />
       </TouchableOpacity>
     </View>
   );
