@@ -12,6 +12,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -106,7 +107,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color={Colors.themeMain} />
+        <ActivityIndicator size="large" color={Colors.themePink} />
       </View>
     );
   }
@@ -117,6 +118,7 @@ export default function HomeScreen() {
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
       />
+      <ScrollView>
       <View style={styles.dateTitle}>
         <Text style={styles.dateTitleText}>
           {formatDateTitle(selectedDate)}
@@ -124,7 +126,7 @@ export default function HomeScreen() {
       </View>
 
       {isTasksLoading ? (
-        <ActivityIndicator size="small" color={Colors.themeMain} />
+        <ActivityIndicator size="small" color={Colors.themePink} />
       ) : taskError ? (
         <Text style={styles.errorText}>{taskError}</Text>
       ) : (
@@ -146,9 +148,10 @@ export default function HomeScreen() {
         <AppIcon
           name="plus"
           size={32}
-          style={{ tintColor: Colors.themeDark }}
+          style={{ tintColor: Colors.themePink }}
         />
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
@@ -166,11 +169,11 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   dateTitle: {
-    marginTop: 5,
+    marginTop: 15,
   },
   dateTitleText: {
     fontSize: 26,
-    color: Colors.black,
+    color: Colors.themePinkDark,
   },
   errorText: {
     color: Colors.red,
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: Colors.lightBlue,
+    backgroundColor: Colors.themeLight,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: Colors.shadow,

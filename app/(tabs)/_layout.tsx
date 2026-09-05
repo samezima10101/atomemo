@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   tabBar: {
     height: 66,
     flexDirection: "row",
-    backgroundColor: Colors.themeLight,
+    backgroundColor: Colors.themeGreen,
     borderRadius: 33,
     overflow: "hidden",
   },

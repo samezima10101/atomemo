@@ -28,16 +28,36 @@ export default function DateItem({
         style={[
           styles.today,
           {
-            backgroundColor: highlighted ? Colors.grayLight : Colors.transparent,
+            // ※必要に応じて selected の場合も背景色を変えるならここを調整してください
+            backgroundColor: highlighted
+              ? Colors.themeGreen
+              : Colors.transparent,
           },
         ]}
       >
-        <Text style={styles.dateText}>{content}</Text>
-        <Text style={styles.dateText}>{date}</Text>
+        {/* 変更箇所: selected が true の場合は "black" に、そうでない場合は themeGreenDark にする */}
+        <Text
+          style={[
+            styles.dateText,
+            { color: selected ? "black" : Colors.themeGreenDark },
+          ]}
+        >
+          {content}
+        </Text>
+        <Text
+          style={[
+            styles.dateText,
+            { color: selected ? "black" : Colors.themeGreenDark },
+          ]}
+        >
+          {date}
+        </Text>
         <View
           style={[
             styles.underline,
-            { backgroundColor: selected ? Colors.themeMain : Colors.transparent },
+            {
+              backgroundColor: selected ? Colors.themePink : Colors.transparent,
+            },
           ]}
         />
       </View>
@@ -64,7 +84,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 20,
     textAlign: "center",
-    color: Colors.black,
+    // ここで指定していた color: Colors.themeGreenDark は、インラインスタイルで上書きされるため残していても問題ありません
   },
   underline: {
     marginTop: 6,

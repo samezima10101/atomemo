@@ -20,10 +20,7 @@ type TaskItemProps = {
   ) => Promise<void>;
 };
 
-export default function TaskItem({
-  task,
-  onCompletionChange,
-}: TaskItemProps) {
+export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
   const [isCompleted, setIsCompleted] = useState(task.is_completed);
   const [comment, setComment] = useState(task.reflection ?? "");
   const [savedComment, setSavedComment] = useState(task.reflection ?? "");
@@ -72,7 +69,11 @@ export default function TaskItem({
       <View style={styles.leftColumn}>
         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
-            <AppIcon name="check" size={32} style={{ tintColor: Colors.themeMain }}/>
+            <AppIcon
+              name="check"
+              size={32}
+              style={{ tintColor: Colors.themePink }}
+            />
           ) : (
             <View style={styles.uncheckCircle} />
           )}
@@ -113,10 +114,14 @@ export default function TaskItem({
               <TouchableOpacity
                 accessibilityLabel="振り返りを確定"
                 onPress={saveComment}
-                style={styles.commentButton }
+                style={styles.commentButton}
               >
                 <View style={styles.commentButtonInner}>
-                  <AppIcon name="check" size={38} style={{ tintColor: Colors.themeMain}} />
+                  <AppIcon
+                    name="check"
+                    size={38}
+                    style={{ tintColor: Colors.themePink }}
+                  />
                 </View>
               </TouchableOpacity>
             </View>
@@ -147,11 +152,11 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: Colors.themeMain,
+    borderColor: Colors.themePink,
   },
   verticalLine: {
     width: 3,
-    backgroundColor: Colors.themeMain,
+    backgroundColor: Colors.themePink,
     flexGrow: 1,
     marginTop: 8,
     marginBottom: 8,
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 20,
     lineHeight: 30,
-    color: Colors.black,
+    color: Colors.grayDark,
   },
   commentRow: {
     flexDirection: "row",
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     borderWidth: 2,
-    borderColor: Colors.themeMain,
+    borderColor: Colors.themePink,
     borderRadius: 7,
     backgroundColor: Colors.white,
     shadowColor: Colors.black,

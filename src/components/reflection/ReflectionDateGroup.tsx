@@ -22,6 +22,12 @@ export default function ReflectionDateGroup({
 }
 
 const styles = StyleSheet.create({
-	group: { marginBottom: 20 },
-	heading: { fontSize: 24, lineHeight: 32, color: Colors.black, marginBottom: 12 },
+  group: { marginBottom: 20 },
+  heading: {
+    marginTop: 15,
+    fontSize: 24,
+    lineHeight: 32,
+    color: Colors.themePinkDark,
+    marginBottom: 12,
+  },
 });
