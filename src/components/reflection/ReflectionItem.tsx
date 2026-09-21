@@ -1,6 +1,9 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { updateTask } from "@/src/features/tasks/services/reflectionServices";
+import {
+  deleteTask,
+  updateTask,
+} from "@/src/features/tasks/services/reflectionServices";
 import type { Task } from "@/src/types/task";
 import { useRef, useState } from "react";
 import {
@@ -14,9 +17,17 @@ import {
   View,
 } from "react-native";
 
-export default function ReflectionItem({ task }: { task: Task }) {
+export default function ReflectionItem({
+  task,
+  onDeleted,
+}: {
+  task: Task;
+  onDeleted: (taskId: string) => void;
+}) {
   const [reflection, setReflection] = useState(task.reflection ?? "");
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const deleting = useRef(false);
   const [reflectionInputHeight, setReflectionInputHeight] = useState(48);
   const lastTapAt = useRef(0);
 
@@ -29,6 +40,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
   };
 
   const saveReflection = async () => {
+    if (deleting.current) return;
     setIsEditing(false);
     Keyboard.dismiss();
     const nextReflection = reflection.trim();
@@ -52,6 +64,39 @@ export default function ReflectionItem({ task }: { task: Task }) {
     setReflectionInputHeight(Math.max(48, lineCount * 24 + 24));
   };
 
+  const handleDelete = () => {
+    if (deleting.current) return;
+
+    Alert.alert("タスクを削除", "このタスクを削除しますか？", [
+      { text: "キャンセル", style: "cancel" },
+      {
+        text: "削除",
+        style: "destructive",
+        onPress: async () => {
+          if (deleting.current) return;
+          deleting.current = true;
+          setIsDeleting(true);
+          Keyboard.dismiss();
+
+          try {
+            await deleteTask(task.id);
+            onDeleted(task.id);
+          } catch (error) {
+            Alert.alert(
+              "削除できませんでした",
+              error instanceof Error
+                ? error.message
+                : "タスクの削除に失敗しました。",
+            );
+          } finally {
+            deleting.current = false;
+            setIsDeleting(false);
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.checkColumn}>
@@ -62,7 +107,24 @@ export default function ReflectionItem({ task }: { task: Task }) {
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.title}>{task.title}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{task.title}</Text>
+          {isEditing && (
+            <TouchableOpacity
+              accessibilityLabel="タスクを削除"
+              accessibilityRole="button"
+              disabled={isDeleting}
+              onPress={handleDelete}
+              style={styles.deleteButton}
+            >
+              <AppIcon
+                name="trash"
+                size={26}
+                style={{ tintColor: Colors.red }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
         {isEditing ? (
           <View
             style={[
@@ -75,6 +137,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
               autoFocus
               multiline
               value={reflection}
+              editable={!isDeleting}
               onChangeText={handleReflectionChange}
               onSubmitEditing={saveReflection}
               style={[styles.commentInput, { height: reflectionInputHeight }]}
@@ -83,6 +146,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
             />
             <TouchableOpacity
               accessibilityLabel="メモを確定"
+              disabled={isDeleting}
               onPress={saveReflection}
               style={styles.commentButton}
             >
@@ -90,7 +154,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
                 <AppIcon
                   name="check"
                   size={32}
-                  style={{ tintColor: Colors.themePinkDark }}
+                  style={{ tintColor: Colors.themePink }}
                 />
               </View>
             </TouchableOpacity>
@@ -109,7 +173,10 @@ const styles = StyleSheet.create({
   container: { flexDirection: "row", minHeight: 112 },
   checkColumn: { width: 40, paddingTop: 5 },
   content: { flex: 1, paddingBottom: 28 },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  deleteButton: { padding: 10 },
   title: {
+    flexShrink: 1,
     fontSize: 30,
     lineHeight: 38,
     color: Colors.black,

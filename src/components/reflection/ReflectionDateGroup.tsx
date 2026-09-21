@@ -3,11 +3,16 @@ import type { Task } from "@/src/types/task";
 import { StyleSheet, Text, View } from "react-native";
 import ReflectionItem from "./ReflectionItem";
 
-type ReflectionDateGroupProps = { date: string; tasks: Task[] };
+type ReflectionDateGroupProps = {
+  date: string;
+  tasks: Task[];
+  onDeleted: (taskId: string) => void;
+};
 
 export default function ReflectionDateGroup({
 	date,
 	tasks,
+	onDeleted,
 }: ReflectionDateGroupProps) {
 	return (
 		<View style={styles.group}>
@@ -15,7 +20,7 @@ export default function ReflectionDateGroup({
 				{date} • {tasks.length} done
 			</Text>
 			{tasks.map((task) => (
-				<ReflectionItem key={task.id} task={task} />
+				<ReflectionItem key={task.id} task={task} onDeleted={onDeleted} />
 			))}
 		</View>
 	);

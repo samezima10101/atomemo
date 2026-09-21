@@ -14,7 +14,7 @@ import {
 
 export default function HomeScreen() {
   const { user, isLoading: isAuthLoading } = useAuth();
-  const { tasks, isLoading, error, reload } = useReflections(user?.id);
+  const { tasks, isLoading, error, reload, removeTask } = useReflections(user?.id);
 
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +42,7 @@ export default function HomeScreen() {
         ) : error ? (
           <Text style={styles.errorText}>{error}</Text>
         ) : (
-          <ReflectionList tasks={tasks} />
+          <ReflectionList tasks={tasks} onDeleted={removeTask} />
         )}
       </ScrollView>
     </View>
