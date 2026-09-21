@@ -72,6 +72,7 @@ export const TaskForm = ({
           style={{ tintColor: Colors.themePink }}
         />
         <TextInput
+          maxLength={20}
           placeholder="タイトルを入力"
           value={title}
           onChangeText={setTitle}
@@ -115,6 +116,7 @@ export const TaskForm = ({
           <View style={styles.contentBox}>
             <TextInput
               placeholder="内容"
+              maxLength={200}
               value={description}
               onChangeText={setDescription}
               multiline

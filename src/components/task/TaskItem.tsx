@@ -113,6 +113,7 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
                 ref={commentInputRef}
                 value={comment}
                 onChangeText={handleCommentChange}
+                maxLength={200}
                 placeholder="振り返りを入力"
                 placeholderTextColor={Colors.gray}
                 style={[styles.commentInput, { height: commentInputHeight }]}

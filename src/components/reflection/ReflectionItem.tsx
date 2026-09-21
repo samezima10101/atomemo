@@ -71,6 +71,7 @@ export default function ReflectionItem({ task }: { task: Task }) {
             ]}
           >
             <TextInput
+              maxLength={1000}
               autoFocus
               multiline
               value={reflection}
