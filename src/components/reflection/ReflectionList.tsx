@@ -8,7 +8,10 @@ const formatDate = (completedAt: string) => {
 	return `${date.getMonth() + 1}月${date.getDate()}日(${"日月火水木金土"[date.getDay()]})`;
 };
 
-export default function ReflectionList({ tasks }: { tasks: Task[] }) {
+export default function ReflectionList({ tasks, onDeleted }: {
+  tasks: Task[];
+  onDeleted: (taskId: string) => void;
+}) {
 	const groups = tasks.reduce<{ date: string; tasks: Task[] }[]>(
 		(result, task) => {
 			const date = formatDate(task.completed_at!);
@@ -27,7 +30,7 @@ export default function ReflectionList({ tasks }: { tasks: Task[] }) {
 	return (
 		<View>
 			{groups.map((group) => (
-				<ReflectionDateGroup key={group.date} {...group} />
+				<ReflectionDateGroup key={group.date} {...group} onDeleted={onDeleted} />
 			))}
 		</View>
 	);

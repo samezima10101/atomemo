@@ -1,10 +1,10 @@
+import { AppIcon } from "@/src/components/common/AppIcon";
 import { TaskForm } from "@/src/components/task/TaskForm";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { getTaskById } from "@/src/features/reflections/services/reflectionService";
 import { useTasks } from "@/src/features/tasks/hooks/useTasks";
 import type { Task } from "@/src/types/task";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -110,8 +110,7 @@ export default function EditScreen() {
               onPress={() => router.back()}
               style={styles.backButton}
             >
-              <AntDesign name="left" size={18} color={Colors.black} />
-              <Text style={styles.backText}>戻る</Text>
+              <Text style={styles.backText}>＜ 戻る</Text>
             </TouchableOpacity>
 
             {/* 既存タスクの編集時のみ削除ボタンを表示する制御 */}
@@ -122,10 +121,10 @@ export default function EditScreen() {
                 disabled={isSubmitting}
                 accessibilityLabel="タスクを削除"
               >
-                <MaterialCommunityIcons
-                  name="trash-can-outline"
+                <AppIcon
+                  name="trash"
                   size={26}
-                  color={Colors.red}
+                  style={{ tintColor: Colors.red }}
                 />
               </TouchableOpacity>
             )}

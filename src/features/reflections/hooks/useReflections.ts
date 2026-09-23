@@ -32,5 +32,9 @@ export const useReflections = (userId?: string) => {
 		reload();
 	}, [reload]);
 
-	return { tasks, isLoading, error, reload };
+	const removeTask = useCallback((taskId: string) => {
+		setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+	}, []);
+
+	return { tasks, isLoading, error, reload, removeTask };
 };
