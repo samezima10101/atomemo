@@ -28,7 +28,6 @@ export default function DateItem({
         style={[
           styles.today,
           {
-            // ※必要に応じて selected の場合も背景色を変えるならここを調整してください
             backgroundColor: highlighted
               ? Colors.themeGreen
               : Colors.transparent,
