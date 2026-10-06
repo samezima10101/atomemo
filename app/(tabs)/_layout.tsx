@@ -2,7 +2,7 @@ import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
 import { Tabs } from "expo-router";
 import type { ComponentProps } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Animated,
   Easing,
@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 
 type SlidingTabBarProps = Parameters<
   NonNullable<ComponentProps<typeof Tabs>["tabBar"]>
@@ -20,10 +21,19 @@ type SlidingTabBarProps = Parameters<
 function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
   const [tabBarWidth, setTabBarWidth] = useState(0);
   const insets = useSafeAreaInsets();
+  const { goTo, stepIndex, registerUndo } = useTutorial();
 
+  useEffect(() => {
+    registerUndo("open-reflections", () => navigation.navigate("index"));
+    registerUndo("return-day", () => navigation.navigate("reflections"));
+    return () => {
+      registerUndo("open-reflections");
+      registerUndo("return-day");
+    };
+  }, [navigation, registerUndo]);
   // 0 = Dayモード
   // 1 = 振り返り
-  const animation = useRef(new Animated.Value(state.index)).current;
+  const [animation] = useState(() => new Animated.Value(state.index));
 
   // 別タブが選択されたときにアニメーションを実行する
   useEffect(() => {
@@ -93,14 +103,13 @@ function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
               if (!isFocused && !event.defaultPrevented) {
                 navigation.navigate(route.name, route.params);
               }
+              if (route.name === "reflections" && stepIndex === 6) goTo("review-notes");
+              if (route.name === "index" && stepIndex === 9) goTo("finished");
             };
 
             return (
-              <Pressable
-                key={route.key}
-                onPress={onPress}
-                style={styles.tabButton}
-              >
+              <TutorialTargetView key={route.key} id={route.name === "index" ? "tabs.day" : "tabs.reflections"} style={styles.tabTarget}>
+               <Pressable onPress={onPress} style={styles.tabButton}>
                 {route.name === "index" ? (
                   <AppIcon
                     name="tabList"
@@ -116,7 +125,8 @@ function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
                 )}
 
                 <Text style={styles.tabLabel}>{label}</Text>
-              </Pressable>
+               </Pressable>
+              </TutorialTargetView>
             );
           })}
         </View>
@@ -202,6 +212,7 @@ const styles = StyleSheet.create({
 
     gap: 10,
   },
+  tabTarget: { flex: 1 },
 
   tabLabel: {
     fontSize: 18,

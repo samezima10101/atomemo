@@ -7,20 +7,22 @@ type ReflectionDateGroupProps = {
   date: string;
   tasks: Task[];
   onDeleted: (taskId: string) => void;
+  tutorialTarget?: boolean;
 };
 
 export default function ReflectionDateGroup({
 	date,
 	tasks,
 	onDeleted,
+	tutorialTarget = false,
 }: ReflectionDateGroupProps) {
 	return (
 		<View style={styles.group}>
 			<Text style={styles.heading}>
 				{date} • {tasks.length} done
 			</Text>
-			{tasks.map((task) => (
-				<ReflectionItem key={task.id} task={task} onDeleted={onDeleted} />
+			{tasks.map((task, index) => (
+				<ReflectionItem key={task.id} task={task} onDeleted={onDeleted} tutorialTarget={tutorialTarget && index === 0} />
 			))}
 		</View>
 	);
