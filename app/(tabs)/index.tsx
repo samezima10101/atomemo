@@ -32,7 +32,7 @@ export default function HomeScreen() {
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-    return `${year}年${month}月${day}日(${dayOfWeek})`;
+    return `${month}月${day}日(${dayOfWeek})`;
   };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
   const [todayResetRequest, setTodayResetRequest] = useState(0);
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 24,
+    padding: 10,
     position: "relative",
   },
   dateTitle: {
