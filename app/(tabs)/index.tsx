@@ -1,5 +1,6 @@
 import WeekCalendar from "@/src/components/calendar/WeekCalendar";
-import DailyTaskView from "@/src/components/task/DailyTaskView";
+import { AppIcon } from "@/src/components/common/AppIcon";
+import TaskList from "@/src/components/task/TaskList";
 import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
@@ -7,9 +8,16 @@ import { updateTaskCompletion } from "@/src/features/tasks/services/reflectionSe
 import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
 
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const getInitialDate = () => {
   const weekDays = getWeekDays();
@@ -17,6 +25,13 @@ const getInitialDate = () => {
 };
 
 export default function HomeScreen() {
+  const formatDateTitle = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+    return `${month}月${day}日(${dayOfWeek})`;
+  };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
   const { user, isLoading, signInAnonymously } = useAuth();
@@ -99,20 +114,44 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.calendar}>
-        <WeekCalendar
-          selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
-        />
-      </View>
-      <DailyTaskView
+      <WeekCalendar
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
-        tasks={tasks}
-        isTasksLoading={isTasksLoading}
-        taskError={taskError}
-        onCompletionChange={handleCompletionChange}
       />
+      <ScrollView>
+        <View style={styles.dateTitle}>
+          <Text style={styles.dateTitleText}>
+            {formatDateTitle(selectedDate)}
+          </Text>
+        </View>
+
+        {isTasksLoading ? (
+          <ActivityIndicator size="small" color={Colors.themePink} />
+        ) : taskError ? (
+          <Text style={styles.errorText}>{taskError}</Text>
+        ) : (
+          <TaskList
+            tasks={tasks}
+            selectedDate={selectedDate}
+            onCompletionChange={handleCompletionChange}
+          />
+        )}
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() =>
+          router.push({
+            pathname: "/tasks/edit",
+            params: { targetDate: selectedDate },
+          })
+        }
+      >
+        <AppIcon
+          name="plus"
+          size={32}
+          style={{ tintColor: Colors.themePink }}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -126,9 +165,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    paddingTop: 24,
+    padding: 24,
+    position: "relative",
   },
-  calendar: {
-    marginHorizontal: 24,
+  dateTitle: {
+    marginTop: 15,
+  },
+  dateTitleText: {
+    fontSize: 26,
+    color: Colors.themePinkDark,
+  },
+  errorText: {
+    color: Colors.red,
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  fab: {
+    position: "absolute",
+    bottom: 30,
+    right: 24,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: Colors.themeLight,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
   },
 });
