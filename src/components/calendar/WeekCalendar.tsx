@@ -1,17 +1,19 @@
 import { Colors } from "@/src/constants/theme";
 import { addWeeks, getWeekDays } from "@/src/utils/date";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import DateItem from "./DateItem";
 
 type WeekCalendarProps = {
   selectedDate: string;
   onSelectDate: (date: string) => void;
+  todayResetRequest: number;
 };
 
 export default function WeekCalendar({
   selectedDate,
   onSelectDate,
+  todayResetRequest,
 }: WeekCalendarProps) {
   const [calendarWidth, setCalendarWidth] = useState(0);
   const weeks = useMemo(() => {
@@ -24,6 +26,22 @@ export default function WeekCalendar({
 
     return result.map((o) => getWeekDays(addWeeks(today, o)));
   }, []);
+  const listRef = useRef<FlatList<(typeof weeks)[number]>>(null);
+
+  useEffect(() => {
+    if (calendarWidth === 0) return;
+
+    const weekIndex = weeks.findIndex((weekDays) =>
+      weekDays.some((day) => day.fullDate === selectedDate),
+    );
+
+    if (weekIndex === -1) return;
+
+    listRef.current?.scrollToIndex({
+      index: weekIndex,
+      animated: true,
+    });
+  }, [selectedDate, calendarWidth, weeks, todayResetRequest]);
 
   return (
     <View
@@ -32,6 +50,7 @@ export default function WeekCalendar({
       {calendarWidth > 0 && (
         <FlatList
           key={calendarWidth}
+          ref={listRef}
           data={weeks}
           horizontal
           pagingEnabled
