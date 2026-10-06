@@ -27,12 +27,21 @@ const getInitialDate = () => {
 export default function HomeScreen() {
   const formatDateTitle = (dateString: string) => {
     const date = new Date(dateString);
+    const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-    return `${month}月${day}日(${dayOfWeek})`;
+    return `${year}年${month}月${day}日(${dayOfWeek})`;
   };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
+  const [todayResetRequest, setTodayResetRequest] = useState(0);
+
+  const handleBackToToday = () => {
+    setSelectedDate(getInitialDate());
+    // 選択日が今日のまま、カレンダーだけスワイプしてる場合でも確実に今日の週に戻すためのリクエストを送る
+    // 今日に戻るボタンを押すたびにこのsetTodayResetRequestが更新されるので、WeekCalendarのuseEffectが発火して今日の週に戻る
+    setTodayResetRequest((request) => request + 1);
+  };
 
   const { user, isLoading, signInAnonymously } = useAuth();
 
@@ -117,12 +126,19 @@ export default function HomeScreen() {
       <WeekCalendar
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
+        todayResetRequest={todayResetRequest}
       />
       <ScrollView>
         <View style={styles.dateTitle}>
           <Text style={styles.dateTitleText}>
             {formatDateTitle(selectedDate)}
           </Text>
+          <TouchableOpacity
+            style={styles.todayButton}
+            onPress={handleBackToToday}
+          >
+            <Text style={styles.todayButtonText}>今日に戻る</Text>
+          </TouchableOpacity>
         </View>
 
         {isTasksLoading ? (
@@ -170,10 +186,25 @@ const styles = StyleSheet.create({
   },
   dateTitle: {
     marginTop: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   dateTitleText: {
     fontSize: 26,
     color: Colors.themePinkDark,
+  },
+  todayButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: Colors.themePink,
+    borderRadius: 18,
+  },
+  todayButtonText: {
+    color: Colors.themePinkDark,
+    fontSize: 14,
+    fontWeight: "600",
   },
   errorText: {
     color: Colors.red,
