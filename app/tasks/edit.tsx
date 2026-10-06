@@ -140,7 +140,6 @@ export default function EditScreen() {
           {/* フォームコンポーネントの呼び出し */}
           {(!taskId || task) && (
             <TaskForm
-              autoFocusTitle={!taskId}
               onSubmit={handleFormSubmit}
               isSubmitting={isSubmitting}
               initialTitle={task?.title ?? ""}

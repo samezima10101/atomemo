@@ -14,14 +14,11 @@ export default function WeekCalendar({
   onSelectDate,
 }: WeekCalendarProps) {
   const [calendarWidth, setCalendarWidth] = useState(0);
-  const [year, month, day] = selectedDate.split("-").map(Number);
-  const selectedWeekStart = getWeekDays(new Date(year, month - 1, day))[0].fullDate;
   const weeks = useMemo(() => {
-    const [year, month, day] = selectedWeekStart.split("-").map(Number);
-    const baseDate = new Date(year, month - 1, day);
+    const today = new Date();
 
-    return [-1, 0, 1].map((offset) => getWeekDays(addWeeks(baseDate, offset)));
-  }, [selectedWeekStart]);
+    return [-1, 0, 1].map((offset) => getWeekDays(addWeeks(today, offset)));
+  }, []);
 
   return (
     <View
@@ -29,7 +26,7 @@ export default function WeekCalendar({
     >
       {calendarWidth > 0 && (
         <FlatList
-          key={`${calendarWidth}-${selectedWeekStart}`}
+          key={calendarWidth}
           data={weeks}
           horizontal
           pagingEnabled
