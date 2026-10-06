@@ -27,10 +27,11 @@ const getInitialDate = () => {
 export default function HomeScreen() {
   const formatDateTitle = (dateString: string) => {
     const date = new Date(dateString);
+    const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-    return `${month}月${day}日(${dayOfWeek})`;
+    return `${year}年${month}月${day}日(${dayOfWeek})`;
   };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
