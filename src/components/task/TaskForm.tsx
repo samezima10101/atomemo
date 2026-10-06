@@ -16,7 +16,6 @@ import {
 
 // 必要なプロパティの型定義
 type TaskFormProps = {
-  autoFocusTitle?: boolean;
   initialTitle?: string;
   initialDescription?: string;
   initialTargetDate?: string;
@@ -37,7 +36,6 @@ const parseDatabaseDate = (date: string) => {
 };
 
 export const TaskForm = ({
-  autoFocusTitle = false,
   initialTitle = "",
   initialDescription = "",
   initialTargetDate = new Date().toISOString(), // 初期値は今日の日付
@@ -74,7 +72,6 @@ export const TaskForm = ({
           style={{ tintColor: Colors.themePink }}
         />
         <TextInput
-          autoFocus={autoFocusTitle}
           maxLength={20}
           placeholder="タイトルを入力"
           value={title}
