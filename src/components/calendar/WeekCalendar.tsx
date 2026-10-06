@@ -16,8 +16,13 @@ export default function WeekCalendar({
   const [calendarWidth, setCalendarWidth] = useState(0);
   const weeks = useMemo(() => {
     const today = new Date();
+    const result = [];
 
-    return [-1, 0, 1].map((offset) => getWeekDays(addWeeks(today, offset)));
+    for (let i = -522; i <= 522; i++) {
+      result.push(i);
+    }
+
+    return result.map((o) => getWeekDays(addWeeks(today, o)));
   }, []);
 
   return (

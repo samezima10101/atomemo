@@ -22,6 +22,7 @@ export const getWeekDays = (baseDate = new Date()) => {
   });
 };
 
+// amountに渡す数によって、前後何週間設定するか決める関数
 export const addWeeks = (date: Date, amount: number) => {
   const result = new Date(date);
   result.setDate(result.getDate() + amount * 7);
