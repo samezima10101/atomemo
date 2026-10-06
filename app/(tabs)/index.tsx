@@ -10,9 +10,10 @@ import { getWeekDays } from "@/src/utils/date";
 import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  PanResponder,
   ScrollView,
   StyleSheet,
   Text,
@@ -28,12 +29,48 @@ const getInitialDate = () => {
 export default function HomeScreen() {
   const formatDateTitle = (dateString: string) => {
     const date = new Date(dateString);
+    const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
     return `${month}月${day}日(${dayOfWeek})`;
   };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
+  const [todayResetRequest, setTodayResetRequest] = useState(0);
+
+  const handleBackToToday = () => {
+    setSelectedDate(getInitialDate());
+    // 選択日が今日のまま、カレンダーだけスワイプしてる場合でも確実に今日の週に戻すためのリクエストを送る
+    // 今日に戻るボタンを押すたびにこのsetTodayResetRequestが更新されるので、WeekCalendarのuseEffectが発火して今日の週に戻る
+    setTodayResetRequest((request) => request + 1);
+  };
+
+  const daySwipeResponder = useMemo(
+    () =>
+      PanResponder.create({
+        // タップと縦スクロールは子要素に任せる。
+        onMoveShouldSetPanResponderCapture: (
+          _,
+          { dx, dy, numberActiveTouches },
+        ) =>
+          numberActiveTouches === 1 &&
+          Math.abs(dx) > 20 &&
+          Math.abs(dx) > Math.abs(dy) * 2,
+        onPanResponderRelease: (_, { dx, dy }) => {
+          if (Math.abs(dx) < 50 || Math.abs(dx) <= Math.abs(dy) * 2) return;
+
+          setSelectedDate((currentDate) => {
+            const [year, month, day] = currentDate.split("-").map(Number);
+            const nextDate = new Date(year, month - 1, day);
+            nextDate.setDate(nextDate.getDate() + (dx < 0 ? 1 : -1));
+            return getWeekDays(nextDate).find(
+              (date) => Number(date.date) === nextDate.getDate(),
+            )!.fullDate;
+          });
+        },
+      }),
+    [],
+  );
   const { goTo, stepIndex, active: isTutorialActive, registerUndo } = useTutorial();
 
   const { user, isLoading, signInAnonymously } = useAuth();
@@ -119,47 +156,56 @@ export default function HomeScreen() {
       <WeekCalendar
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
+        todayResetRequest={todayResetRequest}
       />
-      <ScrollView scrollEnabled={!isTutorialActive}>
-        <TutorialTargetView id="home.welcome" style={styles.dateTitle}>
-          <Text style={styles.dateTitleText}>
-            {formatDateTitle(selectedDate)}
-          </Text>
-        </TutorialTargetView>
+      <View style={styles.dayContent} {...daySwipeResponder.panHandlers}>
+        <ScrollView scrollEnabled={!isTutorialActive}>
+          <TutorialTargetView id="home.welcome" style={styles.dateTitle}>
+            <Text style={styles.dateTitleText}>
+              {formatDateTitle(selectedDate)}
+            </Text>
+            <TouchableOpacity
+              style={styles.todayButton}
+              onPress={handleBackToToday}
+            >
+              <Text style={styles.todayButtonText}>今日に戻る</Text>
+            </TouchableOpacity>
+          </TutorialTargetView>
 
-        {isTasksLoading ? (
-          <ActivityIndicator size="small" color={Colors.themePink} />
-        ) : taskError ? (
-          <Text style={styles.errorText}>{taskError}</Text>
-        ) : (
-          <TaskList
-            tasks={tasks}
-            selectedDate={selectedDate}
-            onCompletionChange={handleCompletionChange}
-          />
-        )}
-      </ScrollView>
+          {isTasksLoading ? (
+            <ActivityIndicator size="small" color={Colors.themePink} />
+          ) : taskError ? (
+            <Text style={styles.errorText}>{taskError}</Text>
+          ) : (
+            <TaskList
+              tasks={tasks}
+              selectedDate={selectedDate}
+              onCompletionChange={handleCompletionChange}
+            />
+          )}
+        </ScrollView>
       <TutorialTargetView id="home.add" style={styles.fab}>
-       <TouchableOpacity
-        style={styles.fabButton}
-        onPress={() => {
+         <TouchableOpacity
+          style={styles.fabButton}
+          onPress={() => {
           if (stepIndex === 1) {
             registerUndo("add-task", () => router.back());
             goTo("write-task");
           }
-          router.push({
-            pathname: "/tasks/edit",
-            params: { targetDate: selectedDate },
-          });
-        }}
-       >
-        <AppIcon
-          name="plus"
-          size={32}
-          style={{ tintColor: Colors.themePink }}
-        />
-       </TouchableOpacity>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            });
+          }}
+         >
+          <AppIcon
+            name="plus"
+            size={32}
+            style={{ tintColor: Colors.themePink }}
+          />
+         </TouchableOpacity>
       </TutorialTargetView>
+      </View>
     </View>
   );
 }
@@ -173,15 +219,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 24,
+    padding: 10,
     position: "relative",
   },
   dateTitle: {
     marginTop: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   dateTitleText: {
     fontSize: 26,
     color: Colors.themePinkDark,
+  },
+  todayButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: Colors.themePink,
+    borderRadius: 18,
+  },
+  todayButtonText: {
+    color: Colors.themePinkDark,
+    fontSize: 14,
+    fontWeight: "600",
   },
   errorText: {
     color: Colors.red,
@@ -205,4 +266,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   fabButton: { width: "100%", height: "100%", alignItems: "center", justifyContent: "center" },
+  dayContent: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
 });

@@ -70,10 +70,25 @@ export const TaskForm = ({
       {/* タイトル・日付・内容をまとめたフォーム領域 */}
       <TutorialTargetView id="task.form">
       {/* タイトルエリア */}
-       <View style={styles.titleSection}>
-        <AppIcon name="circle" size={28} style={{ tintColor: Colors.themePink }} />
-        <TextInput maxLength={20} placeholder="タイトルを入力" value={title} onChangeText={setTitle} caretHidden={false} placeholderTextColor={Colors.gray} selectionColor={Colors.themeDark} cursorColor={Colors.themeDark} style={styles.titleInput} />
-       </View>
+      <View style={styles.titleSection}>
+        <AppIcon
+          name="circle"
+          size={28}
+          style={{ tintColor: Colors.themePink }}
+        />
+        <TextInput
+          autoFocus
+          maxLength={20}
+          placeholder="タイトルを入力"
+          value={title}
+          onChangeText={setTitle}
+          caretHidden={false}
+          placeholderTextColor={Colors.gray}
+          selectionColor={Colors.themeDark}
+          cursorColor={Colors.themeDark}
+          style={styles.titleInput}
+        />
+      </View>
 
        {/* カード部分（背景グレー） */}
        <View style={styles.detailCard}>
