@@ -2,7 +2,8 @@ import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
 import type { Task } from "@/src/types/task";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 import {
   Keyboard,
   StyleSheet,
@@ -19,9 +20,11 @@ type TaskItemProps = {
     isCompleted: boolean,
     reflection: string | null,
   ) => Promise<void>;
+  tutorialTargets?: boolean;
 };
 
-export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
+export default function TaskItem({ task, onCompletionChange, tutorialTargets = false }: TaskItemProps) {
+  const { goTo, registerUndo } = useTutorial();
   const commentInputRef = useRef<TextInput>(null);
   const shouldFocusCommentRef = useRef(false);
   const [isCompleted, setIsCompleted] = useState(task.is_completed);
@@ -29,6 +32,33 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
   const [savedComment, setSavedComment] = useState(task.reflection ?? "");
   const [isCommentInputVisible, setIsCommentInputVisible] = useState(false);
   const [commentInputHeight, setCommentInputHeight] = useState(48);
+
+  const undoCompletion = useCallback(async () => {
+    if (!isCompleted) return;
+    await onCompletionChange?.(task.id, false, null);
+    setIsCompleted(false);
+    setIsCommentInputVisible(false);
+    setComment("");
+    setSavedComment("");
+  }, [isCompleted, onCompletionChange, task.id]);
+
+  const undoReflectionSave = useCallback(async () => {
+    await onCompletionChange?.(task.id, true, null);
+    setIsCompleted(true);
+    setIsCommentInputVisible(true);
+    setSavedComment("");
+    setComment("");
+  }, [onCompletionChange, task.id]);
+
+  useEffect(() => {
+    if (!tutorialTargets) return;
+    registerUndo("complete-task", undoCompletion);
+    registerUndo("write-reflection", undoReflectionSave);
+    return () => {
+      registerUndo("complete-task");
+      registerUndo("write-reflection");
+    };
+  }, [registerUndo, tutorialTargets, undoCompletion, undoReflectionSave]);
 
   useEffect(() => {
     if (isCommentInputVisible && shouldFocusCommentRef.current) {
@@ -41,6 +71,7 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
   const toggleComplete = async () => {
     const nextCompleted = !isCompleted;
     if (!isCompleted) {
+      goTo("write-reflection");
       shouldFocusCommentRef.current = true;
       setIsCommentInputVisible(true);
     } else {
@@ -60,6 +91,7 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
     setCommentInputHeight(48);
     setIsCommentInputVisible(false);
     await onCompletionChange?.(task.id, true, nextComment || null);
+    goTo("reflection-saved");
   };
 
   const handleCommentChange = (value: string) => {
@@ -71,13 +103,15 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
   return (
     <View style={styles.container}>
       <View style={styles.leftColumn}>
-        <TouchableOpacity onPress={toggleComplete}>
+        <TutorialTargetView id="home.complete" enabled={tutorialTargets}>
+         <TouchableOpacity onPress={toggleComplete}>
           {isCompleted ? (
             <AppIcon name="check" size={35} style={styles.checkIcon} />
           ) : (
             <View style={styles.uncheckCircle} />
           )}
-        </TouchableOpacity>
+         </TouchableOpacity>
+        </TutorialTargetView>
         <View style={styles.verticalLine} />
       </View>
 
@@ -103,7 +137,7 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
 
         {isCompleted && isCommentInputVisible && (
           <View style={styles.commentRow}>
-            <View
+          <TutorialTargetView id="home.reflection" enabled={tutorialTargets}
               style={[
                 styles.commentInputBox,
                 { height: Math.max(54, commentInputHeight + 6) },
@@ -134,14 +168,14 @@ export default function TaskItem({ task, onCompletionChange }: TaskItemProps) {
                   />
                 </View>
               </TouchableOpacity>
-            </View>
+            </TutorialTargetView>
           </View>
         )}
 
         {isCompleted && !isCommentInputVisible && savedComment && (
-          <View style={styles.savedCommentBox}>
+          <TutorialTargetView id="home.saved" enabled={tutorialTargets} style={styles.savedCommentBox}>
             <Text style={styles.savedComment}>{savedComment}</Text>
-          </View>
+          </TutorialTargetView>
         )}
       </View>
     </View>

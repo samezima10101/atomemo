@@ -7,9 +7,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
 } from "react-native";
 import TaskItem from "./TaskItem";
+import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 
 type TaskListProps = {
   tasks: Task[];
@@ -26,25 +26,29 @@ export default function TaskList({
   selectedDate,
   onCompletionChange,
 }: TaskListProps) {
+  const { active: isTutorialActive, stepIndex, goTo, registerUndo } = useTutorial();
+  const openTaskForm = () => {
+    if (stepIndex === 1) {
+      registerUndo("add-task", () => router.back());
+      goTo("write-task");
+    }
+    router.push({ pathname: "/tasks/edit", params: { targetDate: selectedDate } });
+  };
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {tasks.map((task) => (
+    <ScrollView scrollEnabled={!isTutorialActive} style={styles.container} contentContainerStyle={styles.content}>
+      {tasks.map((task, index) => (
         <TaskItem
           key={task.id}
           task={task}
           onCompletionChange={onCompletionChange}
+          tutorialTargets={index === tasks.length - 1}
         />
       ))}
 
-      <View style={styles.addRow}>
+      <TutorialTargetView id="home.add-row" style={styles.addRow}>
         <TouchableOpacity
           style={styles.addLeftColumn}
-          onPress={() =>
-            router.push({
-              pathname: "/tasks/edit",
-              params: { targetDate: selectedDate },
-            })
-          }
+          onPress={openTaskForm}
         >
           {/* 黒の○の中に＋が入ったSVGアイコン */}
           <AppIcon
@@ -55,17 +59,12 @@ export default function TaskList({
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.addRightColumn}
-          onPress={() =>
-            router.push({
-              pathname: "/tasks/edit",
-              params: { targetDate: selectedDate },
-            })
-          }
+          onPress={openTaskForm}
           activeOpacity={0.7}
         >
           <Text style={styles.addText}>今日のタスクを追加する</Text>
         </TouchableOpacity>
-      </View>
+      </TutorialTargetView>
     </ScrollView>
   );
 }

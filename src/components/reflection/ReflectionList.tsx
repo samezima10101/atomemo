@@ -29,8 +29,8 @@ export default function ReflectionList({ tasks, onDeleted }: {
 
 	return (
 		<View>
-			{groups.map((group) => (
-				<ReflectionDateGroup key={group.date} {...group} onDeleted={onDeleted} />
+			{groups.map((group, index) => (
+				<ReflectionDateGroup key={group.date} {...group} onDeleted={onDeleted} tutorialTarget={index === 0} />
 			))}
 		</View>
 	);

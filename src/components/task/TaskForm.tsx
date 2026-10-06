@@ -2,6 +2,7 @@ import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
+import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 import {
   InputAccessoryView,
   Keyboard,
@@ -24,7 +25,7 @@ type TaskFormProps = {
     title: string;
     description: string;
     target_date: string;
-  }) => void;
+  }) => Promise<boolean> | boolean;
 };
 
 const formatDateForDatabase = (date: Date) =>
@@ -42,16 +43,18 @@ export const TaskForm = ({
   isSubmitting,
   onSubmit,
 }: TaskFormProps) => {
+  const { goTo, active: tutorialActive } = useTutorial();
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
   const [targetDate, setTargetDate] = useState(initialTargetDate);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const descriptionInputAccessoryId = "task-description-input-accessory";
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title.trim()) return; // タイトルが空の場合は送信しない等のバリデーション
     Keyboard.dismiss();
-    onSubmit({ title, description, target_date: targetDate });
+    const saved = await onSubmit({ title, description, target_date: targetDate });
+    if (saved) goTo("complete-task");
   };
 
   const handleDateChange = (_event: unknown, selectedDate?: Date) => {
@@ -64,6 +67,8 @@ export const TaskForm = ({
 
   return (
     <>
+      {/* タイトル・日付・内容をまとめたフォーム領域 */}
+      <TutorialTargetView id="task.form">
       {/* タイトルエリア */}
       <View style={styles.titleSection}>
         <AppIcon
@@ -85,8 +90,8 @@ export const TaskForm = ({
         />
       </View>
 
-      {/* カード部分（背景グレー） */}
-      <View style={styles.detailCard}>
+       {/* カード部分（背景グレー） */}
+       <View style={styles.detailCard}>
         {/* 日付表示行 */}
         <View style={styles.detailRow}>
           <View style={styles.iconColumn}>
@@ -100,6 +105,8 @@ export const TaskForm = ({
           <TouchableOpacity
             style={styles.dateBadge}
             onPress={() => setIsDatePickerVisible(true)}
+            disabled={tutorialActive}
+            accessibilityState={{ disabled: tutorialActive }}
           >
             <Text style={styles.dateText}>{formattedTargetDate}</Text>
           </TouchableOpacity>
@@ -133,7 +140,8 @@ export const TaskForm = ({
             />
           </View>
         </View>
-      </View>
+       </View>
+      </TutorialTargetView>
 
       <Modal
         visible={isDatePickerVisible}
@@ -180,7 +188,8 @@ export const TaskForm = ({
 
       {/* 完了ボタンエリア */}
       <View style={styles.footer}>
-        <TouchableOpacity
+        <TutorialTargetView id="task.save">
+         <TouchableOpacity
           style={styles.doneButton}
           onPress={handleSubmit}
           disabled={isSubmitting}
@@ -188,7 +197,8 @@ export const TaskForm = ({
           <Text style={styles.doneButtonText}>
             {isSubmitting ? "保存中..." : "完了"}
           </Text>
-        </TouchableOpacity>
+         </TouchableOpacity>
+        </TutorialTargetView>
       </View>
     </>
   );

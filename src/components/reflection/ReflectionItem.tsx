@@ -5,7 +5,9 @@ import {
   updateTask,
 } from "@/src/features/tasks/services/reflectionServices";
 import type { Task } from "@/src/types/task";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
+import { tutorialSteps } from "@/src/tutorial/tutorialSteps";
 import {
   Alert,
   Keyboard,
@@ -20,16 +22,42 @@ import {
 export default function ReflectionItem({
   task,
   onDeleted,
+  tutorialTarget = false,
 }: {
   task: Task;
   onDeleted: (taskId: string) => void;
+  tutorialTarget?: boolean;
 }) {
+  const { goTo, stepIndex, registerUndo } = useTutorial();
+  const isEditingTutorial = tutorialTarget && tutorialSteps[stepIndex]?.id === "edit-note";
   const [reflection, setReflection] = useState(task.reflection ?? "");
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const deleting = useRef(false);
   const [reflectionInputHeight, setReflectionInputHeight] = useState(48);
   const lastTapAt = useRef(0);
+
+  const undoNoteEdit = useCallback(async () => {
+    await updateTask(task.id, { reflection: task.reflection });
+    setReflection(task.reflection ?? "");
+    setReflectionInputHeight(48);
+    setIsEditing(false);
+  }, [task.id, task.reflection]);
+  const undoOpeningNote = useCallback(() => {
+    setReflection(task.reflection ?? "");
+    setReflectionInputHeight(48);
+    setIsEditing(false);
+  }, [task.reflection]);
+
+  useEffect(() => {
+    if (!tutorialTarget) return;
+    registerUndo("edit-note", undoNoteEdit);
+    registerUndo("review-notes", undoOpeningNote);
+    return () => {
+      registerUndo("edit-note");
+      registerUndo("review-notes");
+    };
+  }, [registerUndo, tutorialTarget, undoNoteEdit, undoOpeningNote]);
 
   const handleNotePress = () => {
     const now = Date.now();
@@ -41,14 +69,19 @@ export default function ReflectionItem({
 
   const saveReflection = async () => {
     if (deleting.current) return;
-    setIsEditing(false);
     Keyboard.dismiss();
     const nextReflection = reflection.trim();
-    setReflectionInputHeight(48);
-    if (nextReflection === task.reflection) return;
+    if (nextReflection === task.reflection) {
+      setIsEditing(false);
+      goTo("return-day");
+      return;
+    }
 
     try {
       await updateTask(task.id, { reflection: nextReflection || null });
+      setIsEditing(false);
+      setReflectionInputHeight(48);
+      goTo("return-day");
     } catch (error) {
       setReflection(task.reflection ?? "");
       Alert.alert(
@@ -109,7 +142,7 @@ export default function ReflectionItem({
       <View style={styles.content}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{task.title}</Text>
-          {isEditing && (
+          {isEditing && !isEditingTutorial && (
             <TouchableOpacity
               accessibilityLabel="タスクを削除"
               accessibilityRole="button"
@@ -126,7 +159,7 @@ export default function ReflectionItem({
           )}
         </View>
         {isEditing ? (
-          <View
+          <TutorialTargetView id="reflections.edit" enabled={tutorialTarget}
             style={[
               styles.commentInputBox,
               { height: Math.max(54, reflectionInputHeight + 6) },
@@ -139,7 +172,6 @@ export default function ReflectionItem({
               value={reflection}
               editable={!isDeleting}
               onChangeText={handleReflectionChange}
-              onSubmitEditing={saveReflection}
               style={[styles.commentInput, { height: reflectionInputHeight }]}
               selectionColor={Colors.themeDark}
               cursorColor={Colors.themeDark}
@@ -158,11 +190,13 @@ export default function ReflectionItem({
                 />
               </View>
             </TouchableOpacity>
-          </View>
+          </TutorialTargetView>
         ) : (
-          <Pressable style={styles.savedCommentBox} onPress={handleNotePress}>
+          <TutorialTargetView id="reflections.note" enabled={tutorialTarget} style={styles.savedCommentBox}>
+           <Pressable style={styles.notePressable} onPress={handleNotePress}>
             <Text style={styles.noteText}>{reflection}</Text>
-          </Pressable>
+           </Pressable>
+          </TutorialTargetView>
         )}
       </View>
     </View>
@@ -182,7 +216,6 @@ const styles = StyleSheet.create({
     color: Colors.black,
   },
   commentInputBox: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "flex-start",
     marginTop: 18,
@@ -219,6 +252,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
+  notePressable: { flex: 1, justifyContent: "center" },
   noteText: { fontSize: 18, lineHeight: 24, color: Colors.black },
   commentButton: {
     alignSelf: "flex-start",

@@ -4,6 +4,7 @@ import { useAuth } from "@/src/features/auth/AuthContext";
 import { useReflections } from "@/src/features/reflections/hooks/useReflections";
 import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
+import { useTutorial } from "@/src/tutorial/TutorialProvider";
 import {
   ActivityIndicator,
   ScrollView,
@@ -14,6 +15,7 @@ import {
 
 export default function HomeScreen() {
   const { user, isLoading: isAuthLoading } = useAuth();
+  const { active: isTutorialActive } = useTutorial();
   const { tasks, isLoading, error, reload, removeTask } = useReflections(user?.id);
 
   useFocusEffect(
@@ -33,6 +35,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <ScrollView
+        scrollEnabled={!isTutorialActive}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >

@@ -35,13 +35,13 @@ export default function EditScreen() {
     title: string;
     description: string;
     target_date: string;
-  }) => {
+  }): Promise<boolean> => {
     if (!user) {
       alert("ユーザー情報が見つかりません。ホーム画面に戻ってください。");
-      return;
+      return false;
     }
 
-    await submitTask(
+    return submitTask(
       {
         user_id: user.id,
         title: formData.title,
