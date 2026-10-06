@@ -9,9 +9,10 @@ import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
 
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  PanResponder,
   ScrollView,
   StyleSheet,
   Text,
@@ -31,7 +32,7 @@ export default function HomeScreen() {
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-    return `${year}年${month}月${day}日(${dayOfWeek})`;
+    return `${month}月${day}日(${dayOfWeek})`;
   };
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
   const [todayResetRequest, setTodayResetRequest] = useState(0);
@@ -42,6 +43,33 @@ export default function HomeScreen() {
     // 今日に戻るボタンを押すたびにこのsetTodayResetRequestが更新されるので、WeekCalendarのuseEffectが発火して今日の週に戻る
     setTodayResetRequest((request) => request + 1);
   };
+
+  const daySwipeResponder = useMemo(
+    () =>
+      PanResponder.create({
+        // タップと縦スクロールは子要素に任せる。
+        onMoveShouldSetPanResponderCapture: (
+          _,
+          { dx, dy, numberActiveTouches },
+        ) =>
+          numberActiveTouches === 1 &&
+          Math.abs(dx) > 20 &&
+          Math.abs(dx) > Math.abs(dy) * 2,
+        onPanResponderRelease: (_, { dx, dy }) => {
+          if (Math.abs(dx) < 50 || Math.abs(dx) <= Math.abs(dy) * 2) return;
+
+          setSelectedDate((currentDate) => {
+            const [year, month, day] = currentDate.split("-").map(Number);
+            const nextDate = new Date(year, month - 1, day);
+            nextDate.setDate(nextDate.getDate() + (dx < 0 ? 1 : -1));
+            return getWeekDays(nextDate).find(
+              (date) => Number(date.date) === nextDate.getDate(),
+            )!.fullDate;
+          });
+        },
+      }),
+    [],
+  );
 
   const { user, isLoading, signInAnonymously } = useAuth();
 
@@ -128,46 +156,48 @@ export default function HomeScreen() {
         onSelectDate={setSelectedDate}
         todayResetRequest={todayResetRequest}
       />
-      <ScrollView>
-        <View style={styles.dateTitle}>
-          <Text style={styles.dateTitleText}>
-            {formatDateTitle(selectedDate)}
-          </Text>
-          <TouchableOpacity
-            style={styles.todayButton}
-            onPress={handleBackToToday}
-          >
-            <Text style={styles.todayButtonText}>今日に戻る</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.dayContent} {...daySwipeResponder.panHandlers}>
+        <ScrollView>
+          <View style={styles.dateTitle}>
+            <Text style={styles.dateTitleText}>
+              {formatDateTitle(selectedDate)}
+            </Text>
+            <TouchableOpacity
+              style={styles.todayButton}
+              onPress={handleBackToToday}
+            >
+              <Text style={styles.todayButtonText}>今日に戻る</Text>
+            </TouchableOpacity>
+          </View>
 
-        {isTasksLoading ? (
-          <ActivityIndicator size="small" color={Colors.themePink} />
-        ) : taskError ? (
-          <Text style={styles.errorText}>{taskError}</Text>
-        ) : (
-          <TaskList
-            tasks={tasks}
-            selectedDate={selectedDate}
-            onCompletionChange={handleCompletionChange}
+          {isTasksLoading ? (
+            <ActivityIndicator size="small" color={Colors.themePink} />
+          ) : taskError ? (
+            <Text style={styles.errorText}>{taskError}</Text>
+          ) : (
+            <TaskList
+              tasks={tasks}
+              selectedDate={selectedDate}
+              onCompletionChange={handleCompletionChange}
+            />
+          )}
+        </ScrollView>
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() =>
+            router.push({
+              pathname: "/tasks/edit",
+              params: { targetDate: selectedDate },
+            })
+          }
+        >
+          <AppIcon
+            name="plus"
+            size={32}
+            style={{ tintColor: Colors.themePink }}
           />
-        )}
-      </ScrollView>
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() =>
-          router.push({
-            pathname: "/tasks/edit",
-            params: { targetDate: selectedDate },
-          })
-        }
-      >
-        <AppIcon
-          name="plus"
-          size={32}
-          style={{ tintColor: Colors.themePink }}
-        />
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -181,7 +211,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 24,
+    padding: 10,
     position: "relative",
   },
   dateTitle: {
@@ -226,5 +256,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 6,
     elevation: 3,
+  },
+  dayContent: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
   },
 });

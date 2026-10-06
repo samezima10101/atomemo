@@ -72,6 +72,7 @@ export const TaskForm = ({
           style={{ tintColor: Colors.themePink }}
         />
         <TextInput
+          autoFocus
           maxLength={20}
           placeholder="タイトルを入力"
           value={title}
