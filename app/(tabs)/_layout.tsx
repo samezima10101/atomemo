@@ -1,6 +1,7 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
 import {
@@ -136,35 +137,77 @@ function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
 }
 
 export default function TabsLayout() {
-  return (
-    <Tabs
-      tabBar={(props) => <SlidingTabBar {...props} />}
-      screenOptions={{
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        sceneStyle: {
-          backgroundColor: Colors.white,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Dayモード",
-        }}
-      />
+  const insets = useSafeAreaInsets();
 
-      <Tabs.Screen
-        name="reflections"
-        options={{
-          title: "振り返り",
+  return (
+    <View style={styles.layout}>
+      <View
+        pointerEvents="box-none"
+        style={[styles.header, { paddingTop: insets.top }]}
+      >
+        <Pressable
+          accessibilityLabel="設定"
+          accessibilityRole="button"
+          onPress={() => router.push("/settings")}
+          style={styles.settingsButton}
+        >
+          <Ionicons name="settings-outline" size={26} color={Colors.black} />
+        </Pressable>
+      </View>
+
+      <Tabs
+        tabBar={(props) => <SlidingTabBar {...props} />}
+        screenOptions={{
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
+          sceneStyle: {
+            backgroundColor: Colors.white,
+            paddingTop: insets.top + 20,
+          },
         }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Dayモード",
+          }}
+        />
+
+        <Tabs.Screen
+          name="reflections"
+          options={{
+            title: "振り返り",
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  layout: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+
+  settingsButton: {
+    width: 44,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   tabBarWrapper: {
     paddingHorizontal: 15,
     marginBottom: 18,
