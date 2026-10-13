@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.themeGreenDark,
     paddingBottom: 15,
-    paddingTop: 30,
+    paddingTop: 18,
     backgroundColor: Colors.themeGreenLight,
     borderBottomWidth: 1,
     borderBottomColor: Colors.themeGreenDark,
