@@ -1,6 +1,7 @@
 import { Colors } from "@/src/constants/theme";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { ImageStyle, StyleProp, StyleSheet } from "react-native";
+import { ImageStyle, StyleProp, StyleSheet, TextStyle } from "react-native";
 
 const ICONS = {
   check: require("@/assets/images/check-fill.svg"),
@@ -15,7 +16,7 @@ const ICONS = {
   trash: require("@/assets/images/trash-icon.svg"),
 } as const;
 
-export type AppIconName = keyof typeof ICONS;
+export type AppIconName = keyof typeof ICONS | "settings-outline";
 
 type AppIconProps = {
   name: AppIconName;
@@ -24,6 +25,17 @@ type AppIconProps = {
 };
 
 export function AppIcon({ name, size = 24, style }: AppIconProps) {
+  if (name === "settings-outline") {
+    return (
+      <Ionicons
+        name={name}
+        size={size}
+        color={Colors.black}
+        style={style as StyleProp<TextStyle>}
+      />
+    );
+  }
+
   return (
     <Image
       source={ICONS[name]}
