@@ -5,9 +5,12 @@ import { Colors } from "@/src/constants/theme";
 import { useAuth } from "@/src/features/auth/AuthContext";
 import { getTasksByDate } from "@/src/features/reflections/services/reflectionService";
 import { updateTaskCompletion } from "@/src/features/tasks/services/reflectionServices";
+import {
+  TutorialTargetView,
+  useTutorial,
+} from "@/src/tutorial/TutorialProvider";
 import type { Task } from "@/src/types/task";
 import { getWeekDays } from "@/src/utils/date";
-import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -29,7 +32,6 @@ const getInitialDate = () => {
 export default function HomeScreen() {
   const formatDateTitle = (dateString: string) => {
     const date = new Date(dateString);
-    const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
@@ -71,7 +73,12 @@ export default function HomeScreen() {
       }),
     [],
   );
-  const { goTo, stepIndex, active: isTutorialActive, registerUndo } = useTutorial();
+  const {
+    goTo,
+    stepIndex,
+    active: isTutorialActive,
+    registerUndo,
+  } = useTutorial();
 
   const { user, isLoading, signInAnonymously } = useAuth();
 
@@ -184,27 +191,27 @@ export default function HomeScreen() {
             />
           )}
         </ScrollView>
-      <TutorialTargetView id="home.add" style={styles.fab}>
-         <TouchableOpacity
-          style={styles.fabButton}
-          onPress={() => {
-          if (stepIndex === 1) {
-            registerUndo("add-task", () => router.back());
-            goTo("write-task");
-          }
-            router.push({
-              pathname: "/tasks/edit",
-              params: { targetDate: selectedDate },
-            });
-          }}
-         >
-          <AppIcon
-            name="plus"
-            size={32}
-            style={{ tintColor: Colors.themePink }}
-          />
-         </TouchableOpacity>
-      </TutorialTargetView>
+        <TutorialTargetView id="home.add" style={styles.fab}>
+          <TouchableOpacity
+            style={styles.fabButton}
+            onPress={() => {
+              if (stepIndex === 1) {
+                registerUndo("add-task", () => router.back());
+                goTo("write-task");
+              }
+              router.push({
+                pathname: "/tasks/edit",
+                params: { targetDate: selectedDate },
+              });
+            }}
+          >
+            <AppIcon
+              name="plus"
+              size={32}
+              style={{ tintColor: Colors.themePink }}
+            />
+          </TouchableOpacity>
+        </TutorialTargetView>
       </View>
     </View>
   );
@@ -265,7 +272,12 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
-  fabButton: { width: "100%", height: "100%", alignItems: "center", justifyContent: "center" },
+  fabButton: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   dayContent: {
     flex: 1,
     paddingHorizontal: 24,
