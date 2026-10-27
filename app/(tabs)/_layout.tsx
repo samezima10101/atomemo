@@ -1,7 +1,10 @@
 import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
+import {
+  TutorialTargetView,
+  useTutorial,
+} from "@/src/tutorial/TutorialProvider";
 import { router, Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
 import {
@@ -13,7 +16,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { TutorialTargetView, useTutorial } from "@/src/tutorial/TutorialProvider";
 
 type SlidingTabBarProps = Parameters<
   NonNullable<ComponentProps<typeof Tabs>["tabBar"]>
@@ -104,29 +106,34 @@ function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTa
               if (!isFocused && !event.defaultPrevented) {
                 navigateToTab(route.key);
               }
-              if (route.name === "reflections" && stepIndex === 6) goTo("review-notes");
+              if (route.name === "reflections" && stepIndex === 6)
+                goTo("review-notes");
               if (route.name === "index" && stepIndex === 9) goTo("finished");
             };
 
             return (
-              <TutorialTargetView key={route.key} id={route.name === "index" ? "tabs.day" : "tabs.reflections"} style={styles.tabTarget}>
-               <Pressable onPress={onPress} style={styles.tabButton}>
-                {route.name === "index" ? (
-                  <AppIcon
-                    name="tabList"
-                    size={30}
-                    style={{ tintColor: Colors.black }}
-                  />
-                ) : (
-                  <AppIcon
-                    name="tabMemo"
-                    size={30}
-                    style={{ tintColor: Colors.black }}
-                  />
-                )}
+              <TutorialTargetView
+                key={route.key}
+                id={route.name === "index" ? "tabs.day" : "tabs.reflections"}
+                style={styles.tabTarget}
+              >
+                <Pressable onPress={onPress} style={styles.tabButton}>
+                  {route.name === "index" ? (
+                    <AppIcon
+                      name="tabList"
+                      size={30}
+                      style={{ tintColor: Colors.black }}
+                    />
+                  ) : (
+                    <AppIcon
+                      name="tabMemo"
+                      size={30}
+                      style={{ tintColor: Colors.black }}
+                    />
+                  )}
 
-                <Text style={styles.tabLabel}>{label}</Text>
-               </Pressable>
+                  <Text style={styles.tabLabel}>{label}</Text>
+                </Pressable>
               </TutorialTargetView>
             );
           })}
@@ -151,7 +158,7 @@ export default function TabsLayout() {
           onPress={() => router.push("/setting/settings")}
           style={styles.settingsButton}
         >
-          <Ionicons name="settings-outline" size={26} color={Colors.black} />
+          <AppIcon name="settings-outline" size={26} />
         </Pressable>
       </View>
 
