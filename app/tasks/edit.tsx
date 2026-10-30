@@ -8,6 +8,7 @@ import type { Task } from "@/src/types/task";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Keyboard,
   KeyboardAvoidingView,
@@ -131,10 +132,14 @@ export default function EditScreen() {
           </View>
 
           {/* エラーメッセージ表示 */}
-          {error && (
+          {(error || loadError) && (
             <Text style={{ color: Colors.red, marginVertical: 10 }}>
-              {error}
+              {error ?? loadError}
             </Text>
+          )}
+
+          {isTaskLoading && (
+            <ActivityIndicator size="small" color={Colors.themePink} />
           )}
 
           {/* フォームコンポーネントの呼び出し */}

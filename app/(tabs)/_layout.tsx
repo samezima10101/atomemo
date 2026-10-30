@@ -21,19 +21,19 @@ type SlidingTabBarProps = Parameters<
   NonNullable<ComponentProps<typeof Tabs>["tabBar"]>
 >[0];
 
-function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
+function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTabBarProps) {
   const [tabBarWidth, setTabBarWidth] = useState(0);
   const insets = useSafeAreaInsets();
   const { goTo, stepIndex, registerUndo } = useTutorial();
 
   useEffect(() => {
-    registerUndo("open-reflections", () => navigation.navigate("index"));
-    registerUndo("return-day", () => navigation.navigate("reflections"));
+    registerUndo("open-reflections", () => router.navigate("/"));
+    registerUndo("return-day", () => router.navigate("/reflections"));
     return () => {
       registerUndo("open-reflections");
       registerUndo("return-day");
     };
-  }, [navigation, registerUndo]);
+  }, [registerUndo]);
   // 0 = Dayモード
   // 1 = 振り返り
   const [animation] = useState(() => new Animated.Value(state.index));
@@ -97,14 +97,14 @@ function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
                 : (options.title ?? route.name);
 
             const onPress = () => {
-              const event = navigation.emit({
+              const event = emitter.emit({
                 type: "tabPress",
                 target: route.key,
                 canPreventDefault: true,
               });
 
               if (!isFocused && !event.defaultPrevented) {
-                navigation.navigate(route.name, route.params);
+                navigateToTab(route.key);
               }
               if (route.name === "reflections" && stepIndex === 6)
                 goTo("review-notes");
@@ -155,7 +155,7 @@ export default function TabsLayout() {
         <Pressable
           accessibilityLabel="設定"
           accessibilityRole="button"
-          onPress={() => router.push("/settings" as never)}
+          onPress={() => router.push("/setting/settings")}
           style={styles.settingsButton}
         >
           <AppIcon name="settings-outline" size={26} />

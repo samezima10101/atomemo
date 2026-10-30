@@ -29,6 +29,8 @@ export const useReflections = (userId?: string) => {
 	}, [userId]);
 
 	useEffect(() => {
+		// The state changes happen after the asynchronous database request resolves.
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		reload();
 	}, [reload]);
 

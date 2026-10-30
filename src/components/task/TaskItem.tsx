@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import type { TextInputInstance } from "react-native";
 
 type TaskItemProps = {
   task: Task;
@@ -25,7 +26,7 @@ type TaskItemProps = {
 
 export default function TaskItem({ task, onCompletionChange, tutorialTargets = false }: TaskItemProps) {
   const { goTo, registerUndo } = useTutorial();
-  const commentInputRef = useRef<TextInput>(null);
+  const commentInputRef = useRef<TextInputInstance>(null);
   const shouldFocusCommentRef = useRef(false);
   const [isCompleted, setIsCompleted] = useState(task.is_completed);
   const [comment, setComment] = useState(task.reflection ?? "");
