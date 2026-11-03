@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import type { LayoutChangeEvent, View } from "react-native";
+import type { LayoutChangeEvent, ViewInstance } from "react-native";
 import { View as NativeView } from "react-native";
 import { tutorialSteps, type TutorialTarget } from "./tutorialSteps";
 
@@ -12,7 +12,7 @@ type TutorialContextValue = {
   active: boolean;
   ready: boolean;
   rects: TargetRect[];
-  registerTarget: (id: TutorialTarget, node: View | null) => void;
+  registerTarget: (id: TutorialTarget, node: ViewInstance | null) => void;
   refreshTarget: () => void;
   next: () => void;
   previous: () => void;
@@ -28,7 +28,7 @@ export function TutorialProvider({ children }: React.PropsWithChildren) {
   const [stepIndex, setStepIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const [rects, setRects] = useState<TargetRect[]>([]);
-  const targets = useRef(new Map<TutorialTarget, View>());
+  const targets = useRef(new Map<TutorialTarget, ViewInstance>());
   const undoActions = useRef(new Map<string, () => void | Promise<void>>());
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export function TutorialProvider({ children }: React.PropsWithChildren) {
     return () => clearTimeout(timer);
   }, [refreshTarget]);
 
-  const registerTarget = useCallback((id: TutorialTarget, node: View | null) => {
+  const registerTarget = useCallback((id: TutorialTarget, node: ViewInstance | null) => {
     if (node) targets.current.set(id, node);
     else targets.current.delete(id);
     const step = tutorialSteps[stepIndex];
@@ -117,7 +117,7 @@ export function useTutorial() {
 /** Register a native view as the current step's spotlight target. */
 export function useTutorialTarget(id: TutorialTarget) {
   const { registerTarget, refreshTarget } = useTutorial();
-  const ref = useCallback((node: View | null) => registerTarget(id, node), [id, registerTarget]);
+  const ref = useCallback((node: ViewInstance | null) => registerTarget(id, node), [id, registerTarget]);
   const onLayout = useCallback((_event: LayoutChangeEvent) => refreshTarget(), [refreshTarget]);
   return { ref, onLayout };
 }
