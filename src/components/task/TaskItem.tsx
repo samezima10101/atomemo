@@ -25,7 +25,7 @@ type TaskItemProps = {
 
 export default function TaskItem({ task, onCompletionChange, tutorialTargets = false }: TaskItemProps) {
   const { goTo, registerUndo } = useTutorial();
-  const commentInputRef = useRef<TextInput>(null);
+  const commentInputRef = useRef<any>(null);
   const shouldFocusCommentRef = useRef(false);
   const [isCompleted, setIsCompleted] = useState(task.is_completed);
   const [comment, setComment] = useState(task.reflection ?? "");

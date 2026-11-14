@@ -11,6 +11,7 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   StyleSheet,
   Text,
@@ -20,6 +21,21 @@ import {
 } from "react-native";
 
 export default function EditScreen() {
+  const handlePrivacyPolicyPress = async () => {
+    try {
+      await Linking.openURL(
+        "https://docs.google.com/document/d/1lUVf7WuBIVnJM1s5k509vIohi_qOyk_RIt9k5MPmGQM/edit?usp=sharing",
+      );
+    } catch (error) {
+      Alert.alert(
+        "リンクを開けませんでした",
+        error instanceof Error
+          ? error.message
+          : "プライバシーポリシーを開けませんでした。",
+      );
+    }
+  };
+
   // [taskId].tsxから遷移してきた場合、URLパラメータからtaskIdを取得
   const { taskId, targetDate } = useLocalSearchParams<{
     taskId?: string;
@@ -147,6 +163,13 @@ export default function EditScreen() {
               initialTargetDate={task?.target_date ?? targetDate}
             />
           )}
+          <TouchableOpacity
+            onPress={handlePrivacyPolicyPress}
+            style={styles.privacyPolicyLink}
+            accessibilityRole="link"
+          >
+            <Text style={styles.privacyPolicyText}>プライバシーポリシー</Text>
+          </TouchableOpacity>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </>
@@ -203,5 +226,15 @@ const styles = StyleSheet.create({
     color: Colors.red,
     marginBottom: 16,
     paddingHorizontal: 8,
+  },
+  privacyPolicyLink: {
+    alignSelf: "center",
+    marginTop: 24,
+    padding: 8,
+  },
+  privacyPolicyText: {
+    color: Colors.themeDark,
+    fontSize: 14,
+    textDecorationLine: "underline",
   },
 });

@@ -1,18 +1,21 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import type { LayoutChangeEvent, View } from "react-native";
+import type { LayoutChangeEvent } from "react-native";
 import { View as NativeView } from "react-native";
 import { tutorialSteps, type TutorialTarget } from "./tutorialSteps";
 
 const STORAGE_KEY = "atomemo:tutorial:completed:v1";
 
+type NativeTargetNode = {
+  measureInWindow: (callback: (x: number, y: number, width: number, height: number) => void) => void;
+};
 type TargetRect = { x: number; y: number; width: number; height: number };
 type TutorialContextValue = {
   stepIndex: number;
   active: boolean;
   ready: boolean;
   rects: TargetRect[];
-  registerTarget: (id: TutorialTarget, node: View | null) => void;
+  registerTarget: (id: TutorialTarget, node: NativeTargetNode | null) => void;
   refreshTarget: () => void;
   next: () => void;
   previous: () => void;
@@ -28,7 +31,7 @@ export function TutorialProvider({ children }: React.PropsWithChildren) {
   const [stepIndex, setStepIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const [rects, setRects] = useState<TargetRect[]>([]);
-  const targets = useRef(new Map<TutorialTarget, View>());
+  const targets = useRef(new Map<TutorialTarget, NativeTargetNode>());
   const undoActions = useRef(new Map<string, () => void | Promise<void>>());
 
   useEffect(() => {
@@ -63,7 +66,7 @@ export function TutorialProvider({ children }: React.PropsWithChildren) {
     return () => clearTimeout(timer);
   }, [refreshTarget]);
 
-  const registerTarget = useCallback((id: TutorialTarget, node: View | null) => {
+  const registerTarget = useCallback((id: TutorialTarget, node: NativeTargetNode | null) => {
     if (node) targets.current.set(id, node);
     else targets.current.delete(id);
     const step = tutorialSteps[stepIndex];
@@ -117,12 +120,21 @@ export function useTutorial() {
 /** Register a native view as the current step's spotlight target. */
 export function useTutorialTarget(id: TutorialTarget) {
   const { registerTarget, refreshTarget } = useTutorial();
-  const ref = useCallback((node: View | null) => registerTarget(id, node), [id, registerTarget]);
+  const ref = useCallback((node: NativeTargetNode | null) => registerTarget(id, node), [id, registerTarget]);
   const onLayout = useCallback((_event: LayoutChangeEvent) => refreshTarget(), [refreshTarget]);
   return { ref, onLayout };
 }
 
 export function TutorialTargetView({ id, children, style, enabled = true }: React.PropsWithChildren<{ id: TutorialTarget; style?: import("react-native").StyleProp<import("react-native").ViewStyle>; enabled?: boolean }>) {
   const { ref, onLayout } = useTutorialTarget(id);
-  return <NativeView ref={enabled ? ref : undefined} onLayout={enabled ? onLayout : undefined} collapsable={false} style={style}>{children}</NativeView>;
+  return (
+    <NativeView
+      ref={enabled ? (ref as any) : undefined}
+      onLayout={enabled ? onLayout : undefined}
+      collapsable={false}
+      style={style}
+    >
+      {children}
+    </NativeView>
+  );
 }

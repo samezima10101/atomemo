@@ -4,8 +4,8 @@ import {
   TutorialTargetView,
   useTutorial,
 } from "@/src/tutorial/TutorialProvider";
+import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { router, Tabs } from "expo-router";
-import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
 import {
   Animated,
@@ -17,23 +17,41 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type SlidingTabBarProps = Parameters<
-  NonNullable<ComponentProps<typeof Tabs>["tabBar"]>
->[0];
+type SlidingTabBarProps = {
+  state: {
+    index: number;
+    routes: Array<{
+      key: string;
+      name: string;
+      params?: object;
+    }>;
+  };
+  descriptors: BottomTabBarProps["descriptors"];
+  navigation?: BottomTabBarProps["navigation"];
+};
 
 function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
   const [tabBarWidth, setTabBarWidth] = useState(0);
   const insets = useSafeAreaInsets();
   const { goTo, stepIndex, registerUndo } = useTutorial();
+  const indexNavigation = descriptors["index"]?.navigation ?? navigation;
+  const reflectionsNavigation =
+    descriptors["reflections"]?.navigation ?? navigation;
 
   useEffect(() => {
-    registerUndo("open-reflections", () => navigation.navigate("index"));
-    registerUndo("return-day", () => navigation.navigate("reflections"));
+    if (indexNavigation) {
+      registerUndo("open-reflections", () => indexNavigation.navigate("index"));
+    }
+    if (reflectionsNavigation) {
+      registerUndo("return-day", () =>
+        reflectionsNavigation.navigate("reflections"),
+      );
+    }
     return () => {
       registerUndo("open-reflections");
       registerUndo("return-day");
     };
-  }, [navigation, registerUndo]);
+  }, [indexNavigation, reflectionsNavigation, registerUndo]);
   // 0 = Dayモード
   // 1 = 振り返り
   const [animation] = useState(() => new Animated.Value(state.index));
@@ -87,24 +105,20 @@ function SlidingTabBar({ state, descriptors, navigation }: SlidingTabBarProps) {
 
           {/* タブ本体 */}
           {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key];
+            const routeDescriptor = descriptors[route.key] ?? {};
+            const { options } = routeDescriptor;
+            const tabNavigation = routeDescriptor.navigation ?? navigation;
 
             const isFocused = state.index === index;
 
             const label =
-              typeof options.tabBarLabel === "string"
+              typeof options?.tabBarLabel === "string"
                 ? options.tabBarLabel
-                : (options.title ?? route.name);
+                : (options?.title ?? route.name);
 
             const onPress = () => {
-              const event = navigation.emit({
-                type: "tabPress",
-                target: route.key,
-                canPreventDefault: true,
-              });
-
-              if (!isFocused && !event.defaultPrevented) {
-                navigation.navigate(route.name, route.params);
+              if (!isFocused) {
+                tabNavigation?.navigate(route.name, route.params);
               }
               if (route.name === "reflections" && stepIndex === 6)
                 goTo("review-notes");
@@ -163,7 +177,9 @@ export default function TabsLayout() {
       </View>
 
       <Tabs
-        tabBar={(props) => <SlidingTabBar {...props} />}
+        tabBar={(props) => (
+          <SlidingTabBar {...(props as unknown as SlidingTabBarProps)} />
+        )}
         screenOptions={{
           headerShown: false,
           tabBarHideOnKeyboard: true,
