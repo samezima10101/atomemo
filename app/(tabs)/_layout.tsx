@@ -12,7 +12,6 @@ import {
   Easing,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -21,7 +20,11 @@ type SlidingTabBarProps = Parameters<
   NonNullable<ComponentProps<typeof Tabs>["tabBar"]>
 >[0];
 
-function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTabBarProps) {
+function SlidingTabBar({
+  state,
+  emitter,
+  navigateToTab,
+}: SlidingTabBarProps) {
   const [tabBarWidth, setTabBarWidth] = useState(0);
   const insets = useSafeAreaInsets();
   const { goTo, stepIndex, registerUndo } = useTutorial();
@@ -34,8 +37,7 @@ function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTa
       registerUndo("return-day");
     };
   }, [registerUndo]);
-  // 0 = Dayモード
-  // 1 = 振り返り
+  // 0 = Dayモード, 1 = 振り返り, 2 = 設定
   const [animation] = useState(() => new Animated.Value(state.index));
 
   // 別タブが選択されたときにアニメーションを実行する
@@ -48,13 +50,12 @@ function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTa
     }).start();
   }, [state.index, animation]);
 
-  // 左45% : 共通の白い範囲10% : 右45%
-  const activeTabWidth = tabBarWidth * 0.52;
-  const activeTabTravelDistance = tabBarWidth * 0.48;
+  const activeTabWidth = tabBarWidth / state.routes.length;
+  const activeTabTravelDistance = tabBarWidth - activeTabWidth;
 
-  // animationの0,1を画面上の横位置に設定
+  // アニメーションのタブ番号を画面上の横位置に設定
   const translateX = animation.interpolate({
-    inputRange: [0, 1],
+    inputRange: [0, state.routes.length - 1],
     outputRange: [0, activeTabTravelDistance],
   });
 
@@ -87,14 +88,7 @@ function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTa
 
           {/* タブ本体 */}
           {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key];
-
             const isFocused = state.index === index;
-
-            const label =
-              typeof options.tabBarLabel === "string"
-                ? options.tabBarLabel
-                : (options.title ?? route.name);
 
             const onPress = () => {
               const event = emitter.emit({
@@ -111,29 +105,56 @@ function SlidingTabBar({ state, descriptors, emitter, navigateToTab }: SlidingTa
               if (route.name === "index" && stepIndex === 9) goTo("finished");
             };
 
+            const tabButton = (
+              <Pressable
+                accessibilityLabel={
+                  route.name === "index"
+                    ? "Dayモード"
+                    : route.name === "reflections"
+                      ? "振り返り"
+                      : "設定"
+                }
+                accessibilityRole="button"
+                onPress={onPress}
+                style={styles.tabButton}
+              >
+                {route.name === "index" ? (
+                  <AppIcon
+                    name="tabList"
+                    size={30}
+                    style={{ tintColor: Colors.black }}
+                  />
+                ) : route.name === "reflections" ? (
+                  <AppIcon
+                    name="tabMemo"
+                    size={30}
+                    style={{ tintColor: Colors.black }}
+                  />
+                ) : (
+                  <AppIcon
+                    name="settings-outline"
+                    size={30}
+                    style={{ tintColor: Colors.black }}
+                  />
+                )}
+              </Pressable>
+            );
+
+            if (route.name === "setting") {
+              return (
+                <View key={route.key} style={styles.tabTarget}>
+                  {tabButton}
+                </View>
+              );
+            }
+
             return (
               <TutorialTargetView
                 key={route.key}
                 id={route.name === "index" ? "tabs.day" : "tabs.reflections"}
                 style={styles.tabTarget}
               >
-                <Pressable onPress={onPress} style={styles.tabButton}>
-                  {route.name === "index" ? (
-                    <AppIcon
-                      name="tabList"
-                      size={30}
-                      style={{ tintColor: Colors.black }}
-                    />
-                  ) : (
-                    <AppIcon
-                      name="tabMemo"
-                      size={30}
-                      style={{ tintColor: Colors.black }}
-                    />
-                  )}
-
-                  <Text style={styles.tabLabel}>{label}</Text>
-                </Pressable>
+                {tabButton}
               </TutorialTargetView>
             );
           })}
@@ -148,20 +169,6 @@ export default function TabsLayout() {
 
   return (
     <View style={styles.layout}>
-      <View
-        pointerEvents="box-none"
-        style={[styles.header, { paddingTop: insets.top }]}
-      >
-        <Pressable
-          accessibilityLabel="設定"
-          accessibilityRole="button"
-          onPress={() => router.push("/setting/settings")}
-          style={styles.settingsButton}
-        >
-          <AppIcon name="settings-outline" size={26} />
-        </Pressable>
-      </View>
-
       <Tabs
         tabBar={(props) => <SlidingTabBar {...props} />}
         screenOptions={{
@@ -186,6 +193,13 @@ export default function TabsLayout() {
             title: "振り返り",
           }}
         />
+
+        <Tabs.Screen
+          name="setting"
+          options={{
+            title: "設定",
+          }}
+        />
       </Tabs>
     </View>
   );
@@ -195,24 +209,6 @@ const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: Colors.white,
-  },
-
-  header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    alignItems: "flex-end",
-    justifyContent: "center",
-    paddingHorizontal: 24,
-  },
-
-  settingsButton: {
-    width: 44,
-    height: 30,
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   tabBarWrapper: {
@@ -264,8 +260,4 @@ const styles = StyleSheet.create({
   },
   tabTarget: { flex: 1 },
 
-  tabLabel: {
-    fontSize: 18,
-    color: Colors.black,
-  },
 });

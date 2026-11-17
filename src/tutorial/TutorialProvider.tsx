@@ -6,7 +6,13 @@ import { tutorialSteps, type TutorialTarget } from "./tutorialSteps";
 
 const STORAGE_KEY = "atomemo:tutorial:completed:v1";
 
-type TargetRect = { x: number; y: number; width: number; height: number };
+type TargetRect = {
+  id: TutorialTarget;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 type TutorialContextValue = {
   stepIndex: number;
   active: boolean;
@@ -44,13 +50,16 @@ export function TutorialProvider({ children }: React.PropsWithChildren) {
 
   const refreshTarget = useCallback(() => {
     const step = tutorialSteps[stepIndex];
-    const ids = [step?.target, ...(step?.additionalTargets ?? [])].filter((id): id is TutorialTarget => Boolean(id));
+    const ids = [
+      step?.target,
+      ...(step?.additionalTargets ?? []),
+    ].filter((id): id is TutorialTarget => Boolean(id));
     if (ids.length === 0) { setRects([]); return; }
     requestAnimationFrame(() => {
       void Promise.all(ids.map((id) => new Promise<TargetRect | null>((resolve) => {
         const node = targets.current.get(id);
         if (!node) { resolve(null); return; }
-        node.measureInWindow((x, y, width, height) => resolve(width > 0 && height > 0 ? { x, y, width, height } : null));
+        node.measureInWindow((x, y, width, height) => resolve(width > 0 && height > 0 ? { id, x, y, width, height } : null));
       }))).then((measured) => {
         const validRects = measured.filter((item): item is TargetRect => item !== null);
         setRects(validRects);
@@ -67,7 +76,12 @@ export function TutorialProvider({ children }: React.PropsWithChildren) {
     if (node) targets.current.set(id, node);
     else targets.current.delete(id);
     const step = tutorialSteps[stepIndex];
-    if (step?.target === id || step?.additionalTargets?.includes(id)) refreshTarget();
+    if (
+      step?.target === id ||
+      step?.additionalTargets?.includes(id)
+    ) {
+      refreshTarget();
+    }
   }, [refreshTarget, stepIndex]);
 
   const finish = useCallback(() => {

@@ -67,28 +67,28 @@ export const TaskForm = ({
 
   return (
     <>
-      {/* タイトル・日付・内容をまとめたフォーム領域 */}
-      <TutorialTargetView id="task.form">
       {/* タイトルエリア */}
-      <View style={styles.titleSection}>
-        <AppIcon
-          name="circle"
-          size={28}
-          style={{ tintColor: Colors.themePink }}
-        />
-        <TextInput
-          autoFocus
-          maxLength={20}
-          placeholder="タイトルを入力"
-          value={title}
-          onChangeText={setTitle}
-          caretHidden={false}
-          placeholderTextColor={Colors.gray}
-          selectionColor={Colors.themeDark}
-          cursorColor={Colors.themeDark}
-          style={styles.titleInput}
-        />
-      </View>
+      <TutorialTargetView id="task.title">
+        <View style={styles.titleSection}>
+          <AppIcon
+            name="circle"
+            size={28}
+            style={{ tintColor: Colors.themePink }}
+          />
+          <TextInput
+            autoFocus
+            maxLength={20}
+            placeholder="タイトルを入力"
+            value={title}
+            onChangeText={setTitle}
+            caretHidden={false}
+            placeholderTextColor={Colors.gray}
+            selectionColor={Colors.themeDark}
+            cursorColor={Colors.themeDark}
+            style={styles.titleInput}
+          />
+        </View>
+      </TutorialTargetView>
 
        {/* カード部分（背景グレー） */}
        <View style={styles.detailCard}>
@@ -141,7 +141,6 @@ export const TaskForm = ({
           </View>
         </View>
        </View>
-      </TutorialTargetView>
 
       <Modal
         visible={isDatePickerVisible}

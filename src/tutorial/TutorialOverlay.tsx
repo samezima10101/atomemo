@@ -8,8 +8,13 @@ import { tutorialSteps } from "./tutorialSteps";
 
 const PAD = 8;
 const TOOLTIP_HEIGHT = 224;
+const TITLE_SPOTLIGHT_OFFSET = 10;
 
-function getOutsideRects(holes: { x: number; y: number; width: number; height: number }[], width: number, height: number) {
+function getOutsideRects(
+  holes: { x: number; y: number; width: number; height: number }[],
+  width: number,
+  height: number,
+) {
   const xs = [...new Set([0, width, ...holes.flatMap((hole) => [Math.max(0, Math.min(width, hole.x)), Math.max(0, Math.min(width, hole.x + hole.width))])])].sort((a, b) => a - b);
   const ys = [...new Set([0, height, ...holes.flatMap((hole) => [Math.max(0, Math.min(height, hole.y)), Math.max(0, Math.min(height, hole.y + hole.height))])])].sort((a, b) => a - b);
   const outside: { x: number; y: number; width: number; height: number }[] = [];
@@ -53,7 +58,11 @@ export function TutorialOverlay() {
   if (!active || !step) return null;
 
   const holes = rects.map((rect) => ({
-    x: Math.max(0, rect.x - PAD), y: Math.max(0, rect.y - PAD),
+    x: Math.max(0, rect.x - PAD),
+    y: Math.max(
+      0,
+      rect.y - PAD - (rect.id === "task.title" ? TITLE_SPOTLIGHT_OFFSET : 0),
+    ),
     width: Math.min(width, rect.width + PAD * 2), height: rect.height + PAD * 2,
   }));
   const hole = holes[0] ?? null;
