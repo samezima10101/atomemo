@@ -1,23 +1,20 @@
 import { Colors } from "@/src/constants/theme";
 import Svg, { Defs, Mask, Rect } from "react-native-svg";
 import { useEffect, useState } from "react";
-import {
-  Animated,
-  Keyboard,
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTutorial } from "./TutorialProvider";
 import { tutorialSteps } from "./tutorialSteps";
 
 const PAD = 8;
 const TOOLTIP_HEIGHT = 224;
+const TITLE_SPOTLIGHT_OFFSET = 10;
 
-function getOutsideRects(holes: { x: number; y: number; width: number; height: number }[], width: number, height: number) {
+function getOutsideRects(
+  holes: { x: number; y: number; width: number; height: number }[],
+  width: number,
+  height: number,
+) {
   const xs = [...new Set([0, width, ...holes.flatMap((hole) => [Math.max(0, Math.min(width, hole.x)), Math.max(0, Math.min(width, hole.x + hole.width))])])].sort((a, b) => a - b);
   const ys = [...new Set([0, height, ...holes.flatMap((hole) => [Math.max(0, Math.min(height, hole.y)), Math.max(0, Math.min(height, hole.y + hole.height))])])].sort((a, b) => a - b);
   const outside: { x: number; y: number; width: number; height: number }[] = [];
@@ -42,33 +39,7 @@ export function TutorialOverlay() {
   const insets = useSafeAreaInsets();
   const [opacity] = useState(() => new Animated.Value(0));
   const [stepTransition] = useState(() => new Animated.Value(1));
-  const [keyboardTop, setKeyboardTop] = useState<number | null>(null);
   const step = tutorialSteps[stepIndex];
-
-  useEffect(() => {
-    const updateKeyboardTop = (event: {
-      endCoordinates: { screenY: number };
-    }) => {
-      setKeyboardTop(event.endCoordinates.screenY);
-    };
-    const showSubscription = Keyboard.addListener(
-      "keyboardDidShow",
-      updateKeyboardTop,
-    );
-    const frameSubscription = Keyboard.addListener(
-      "keyboardDidChangeFrame",
-      updateKeyboardTop,
-    );
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardTop(null);
-    });
-
-    return () => {
-      showSubscription.remove();
-      frameSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
 
   useEffect(() => {
     Animated.timing(opacity, { toValue: active ? 1 : 0, duration: 220, useNativeDriver: true }).start();
@@ -87,23 +58,23 @@ export function TutorialOverlay() {
   if (!active || !step) return null;
 
   const holes = rects.map((rect) => ({
-    x: Math.max(0, rect.x - PAD), y: Math.max(0, rect.y - PAD),
+    x: Math.max(0, rect.x - PAD),
+    y: Math.max(
+      0,
+      rect.y - PAD - (rect.id === "task.title" ? TITLE_SPOTLIGHT_OFFSET : 0),
+    ),
     width: Math.min(width, rect.width + PAD * 2), height: rect.height + PAD * 2,
   }));
   const hole = holes[0] ?? null;
   const tooltipWidth = Math.min(width - 32, 340);
   const tooltipHeight = stepIndex === 0 ? TOOLTIP_HEIGHT + 56 : TOOLTIP_HEIGHT;
-  const visibleBottom = Math.min(
-    height - insets.bottom,
-    keyboardTop ?? height - insets.bottom,
-  );
-  const centerY = (insets.top + visibleBottom) / 2;
+  const centerY = (insets.top + height - insets.bottom) / 2;
   let tooltipTop = centerY - tooltipHeight / 2;
   let tooltipLeft = (width - tooltipWidth) / 2;
   if (hole) {
     const placement = step.placement ?? (hole.y > height * 0.55 ? "top" : "bottom");
     const safeTop = insets.top + 8;
-    const safeBottom = Math.max(safeTop, visibleBottom - tooltipHeight - 8);
+    const safeBottom = Math.max(safeTop, height - insets.bottom - tooltipHeight - 8);
     const clampTop = (top: number) => Math.max(safeTop, Math.min(safeBottom, top));
     const clampLeft = (left: number) => Math.max(16, Math.min(width - tooltipWidth - 16, left));
     const centeredLeft = clampLeft(hole.x + hole.width / 2 - tooltipWidth / 2);

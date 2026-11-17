@@ -46,10 +46,10 @@ export const tutorialSteps: TutorialStep[] = [
   },
   {
     id: "write-task",
-    target: "task.form",
+    target: "task.title",
     additionalTargets: ["task.save"],
-    title: "タスクタイトルと内容を入力",
-    description: "タイトルと内容を入力したら、完了ボタンを押してください。",
+    title: "タスクタイトルを入力",
+    description: "タイトルを入力したら、完了ボタンを押してください。",
     placement: "bottom",
     controls: false,
   },
