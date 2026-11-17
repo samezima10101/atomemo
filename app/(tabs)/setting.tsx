@@ -1,7 +1,7 @@
 import { Colors } from "@/src/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
-import { router, Stack } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Stack } from "expo-router";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
@@ -10,18 +10,9 @@ export default function SettingsScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable
-            accessibilityLabel="戻る"
-            accessibilityRole="button"
-            onPress={() => router.back()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={30} color={Colors.black} />
-          </Pressable>
           <Text style={styles.title}>設定</Text>
-          <View style={styles.headerSpacer} />
         </View>
 
         <ScrollView
@@ -31,20 +22,19 @@ export default function SettingsScreen() {
           ]}
           showsVerticalScrollIndicator={false}
         >
-          <Pressable
-            accessibilityLabel="メニュー"
-            accessibilityRole="button"
-            style={styles.premiumCard}
-          >
-            <Ionicons name="sparkles-outline" size={29} color={Colors.themePink} />
+          <View style={styles.premiumCard}>
+            <Ionicons
+              name="sparkles-outline"
+              size={29}
+              color={Colors.themePink}
+            />
             <Text style={styles.premiumLabel}>メニュー</Text>
             <Ionicons
               name="chevron-forward"
               size={25}
               color={Colors.grayDark}
             />
-          </Pressable>
-
+          </View>
         </ScrollView>
       </View>
     </>
@@ -58,23 +48,13 @@ const styles = StyleSheet.create({
   },
   header: {
     minHeight: 56,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 24,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
     justifyContent: "center",
+    paddingHorizontal: 24,
   },
   title: {
     fontSize: 24,
     fontWeight: "700",
     color: Colors.themeGreenDark,
-  },
-  headerSpacer: {
-    width: 44,
   },
   content: {
     paddingHorizontal: 20,
