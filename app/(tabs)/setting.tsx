@@ -1,7 +1,7 @@
+import { AppIcon } from "@/src/components/common/AppIcon";
 import { Colors } from "@/src/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
-import { Stack } from "expo-router";
 import * as Linking from "expo-linking";
+import { Stack } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -39,13 +39,13 @@ export default function SettingsScreen() {
             style={styles.premiumCard}
             onPress={openPrivacyPolicy}
           >
-            <Ionicons
+            <AppIcon
               name="sparkles-outline"
               size={29}
               color={Colors.themePink}
             />
             <Text style={styles.premiumLabel}>プライバシーポリシー</Text>
-            <Ionicons
+            <AppIcon
               name="chevron-forward"
               size={25}
               color={Colors.grayDark}
@@ -57,13 +57,9 @@ export default function SettingsScreen() {
             style={styles.premiumCard}
             onPress={openContact}
           >
-            <Ionicons
-              name="mail-outline"
-              size={29}
-              color={Colors.themePink}
-            />
+            <AppIcon name="mail-outline" size={29} color={Colors.themePink} />
             <Text style={styles.premiumLabel}>お問い合わせ</Text>
-            <Ionicons
+            <AppIcon
               name="chevron-forward"
               size={25}
               color={Colors.grayDark}

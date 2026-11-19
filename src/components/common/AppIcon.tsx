@@ -16,21 +16,37 @@ const ICONS = {
   trash: require("@/assets/images/trash-icon.svg"),
 } as const;
 
-export type AppIconName = keyof typeof ICONS | "settings-outline";
+export type AppIconName =
+  | keyof typeof ICONS
+  | "settings-outline"
+  | "sparkles-outline"
+  | "chevron-forward"
+  | "mail-outline";
 
 type AppIconProps = {
   name: AppIconName;
   size?: number;
+  color?: string;
   style?: StyleProp<ImageStyle>;
 };
 
-export function AppIcon({ name, size = 24, style }: AppIconProps) {
-  if (name === "settings-outline") {
+export function AppIcon({
+  name,
+  size = 24,
+  color = Colors.black,
+  style,
+}: AppIconProps) {
+  if (
+    name === "settings-outline" ||
+    name === "sparkles-outline" ||
+    name === "chevron-forward" ||
+    name === "mail-outline"
+  ) {
     return (
       <Ionicons
         name={name}
         size={size}
-        color={Colors.black}
+        color={color}
         style={style as StyleProp<TextStyle>}
       />
     );
