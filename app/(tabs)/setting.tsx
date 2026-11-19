@@ -1,11 +1,22 @@
 import { Colors } from "@/src/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import * as Linking from "expo-linking";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
+  const privacyPolicyUrl = "https://sleguas.com/pages/privacy";
+  const contactUrl = "https://sleguas.com/pages/contact";
+
+  const openPrivacyPolicy = () => {
+    void Linking.openURL(privacyPolicyUrl);
+  };
+
+  const openContact = () => {
+    void Linking.openURL(contactUrl);
+  };
 
   return (
     <>
@@ -22,19 +33,42 @@ export default function SettingsScreen() {
           ]}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.premiumCard}>
+          <Pressable
+            accessibilityLabel="プライバシーポリシー"
+            accessibilityRole="button"
+            style={styles.premiumCard}
+            onPress={openPrivacyPolicy}
+          >
             <Ionicons
               name="sparkles-outline"
               size={29}
               color={Colors.themePink}
             />
-            <Text style={styles.premiumLabel}>メニュー</Text>
+            <Text style={styles.premiumLabel}>プライバシーポリシー</Text>
             <Ionicons
               name="chevron-forward"
               size={25}
               color={Colors.grayDark}
             />
-          </View>
+          </Pressable>
+          <Pressable
+            accessibilityLabel="お問い合わせ"
+            accessibilityRole="button"
+            style={styles.premiumCard}
+            onPress={openContact}
+          >
+            <Ionicons
+              name="mail-outline"
+              size={29}
+              color={Colors.themePink}
+            />
+            <Text style={styles.premiumLabel}>お問い合わせ</Text>
+            <Ionicons
+              name="chevron-forward"
+              size={25}
+              color={Colors.grayDark}
+            />
+          </Pressable>
         </ScrollView>
       </View>
     </>
@@ -59,6 +93,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
     paddingTop: 28,
+    gap: 16,
   },
   premiumCard: {
     minHeight: 88,
